@@ -14,12 +14,11 @@
                 extend: {
                     colors: {
                         brand: {
-                            // Paleta de cores inspirada na imagem aconchegante (image_8ae904.jpg)
                             bg: '#FAF4F2',         // Creme pêssego muito claro e quente
                             bgDark: '#1E1415',     // Berinjela escuro profundo quase chocolate
                             panel: '#FFFDFC',      // Branco porcelana quente
                             panelDark: '#2D1F21',  // Marrom-rosado escuro para o painel noturno
-                            pink: '#E3B1AF',       // Rosa chá/veludo aconchegante da imagem
+                            pink: '#E3B1AF',       // Rosa chá/veludo aconchegante
                             accent: '#D97D77',     // Terracota suave/Rose Gold vibrante
                             accentHover: '#C66761',
                             dark: '#4A3533',       // Bordas e textos em marrom chocolate aconchegante
@@ -53,7 +52,7 @@
             border: 2px solid #ECD5D3;
         }
         
-        /* Sombras neubrutalistas adaptadas à paleta quente */
+        /* Sombras neubrutalistas adaptadas */
         .retro-shadow {
             box-shadow: 4px 4px 0px 0px #4A3533;
         }
@@ -68,7 +67,7 @@
             box-shadow: 2px 2px 0px 0px #ECD5D3;
         }
 
-        /* Efeito 3D flip do Flashcard */
+        /* Efeito 3D flip do Flashcard e Cartas de Memória */
         .card-perspective {
             perspective: 1000px;
         }
@@ -121,11 +120,16 @@
             </span>
         </div>
         
-        <!-- Toggle de Tema Escuro / Claro -->
-        <button onclick="toggleDarkMode()" class="retro-border retro-shadow-sm bg-brand-bg hover:bg-stone-100 px-3 py-1.5 rounded-full text-xs font-mono font-bold flex items-center gap-1.5 transition-all active:translate-y-0.5 dark:bg-brand-bgDark dark:border-brand-lightBorder dark:hover:bg-stone-900">
-            <span id="theme-icon">🌙</span>
-            <span id="theme-text">Modo Escuro</span>
-        </button>
+        <div class="flex items-center gap-2">
+            <!-- Botão de Som Global -->
+            <button onclick="toggleMute()" id="btn-sound-global" class="retro-border retro-shadow-sm bg-brand-panel dark:bg-brand-panelDark px-2.5 py-1.5 rounded-full text-xs transition-all active:translate-y-0.5" title="Mudar som">
+                🔊
+            </button>
+            <button onclick="toggleDarkMode()" class="retro-border retro-shadow-sm bg-brand-bg hover:bg-stone-100 px-3 py-1.5 rounded-full text-xs font-mono font-bold flex items-center gap-1.5 transition-all active:translate-y-0.5 dark:bg-brand-bgDark dark:border-brand-lightBorder dark:hover:bg-stone-900">
+                <span id="theme-icon">🌙</span>
+                <span id="theme-text" class="hidden xs:inline">Escuro</span>
+            </button>
+        </div>
     </header>
 
     <main class="flex-grow w-full max-w-[500px] mx-auto p-4 flex flex-col gap-4 pb-32 overflow-y-auto">
@@ -167,7 +171,6 @@
                     <span id="quiz-progress-text" class="font-mono text-xs font-bold bg-brand-bg px-2 py-1 rounded border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">1 / 10</span>
                 </div>
 
-                <!-- Seletor de Tipo de Questão (Objetivas / Dissertativas) -->
                 <div class="flex gap-1 mt-1 bg-brand-bg p-1 rounded-md border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">
                     <button onclick="setQuizType('obj')" id="btn-type-obj" class="flex-1 py-1 text-center font-mono text-[10px] font-bold rounded bg-brand-panel text-brand-dark border border-brand-dark dark:bg-brand-panelDark dark:text-gray-100">
                         Múltipla Escolha 📝
@@ -178,26 +181,22 @@
                 </div>
             </div>
 
-            <!-- Filtros Rápidos de Matéria (Apenas para Objetivas) -->
             <div id="quiz-filters-container" class="flex gap-1.5 overflow-x-auto pb-1">
                 <button onclick="filterQuestions('all')" id="btn-filt-all" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-dark text-white dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark whitespace-nowrap">Todos</button>
                 <button onclick="filterQuestions('docs')" id="btn-filt-docs" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-panel text-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200 whitespace-nowrap">Res. 06/2019 (Doc)</button>
                 <button onclick="filterQuestions('satepsi')" id="btn-filt-satepsi" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-panel text-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200 whitespace-nowrap">Res. 31/2022 (Satepsi)</button>
             </div>
 
-            <!-- Pergunta e Área de Resolução -->
             <div class="flex flex-col gap-3">
                 <div id="quiz-question-container" class="bg-brand-bg p-3.5 rounded-lg border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">
                     <span id="question-source" class="text-[9px] font-mono bg-brand-accent text-white px-1.5 py-0.5 rounded font-bold">FONTE</span>
                     <p id="question-text" class="font-sans font-semibold text-xs md:text-sm leading-relaxed mt-2 text-stone-800 dark:text-stone-200">Carregando a questão...</p>
                 </div>
 
-                <!-- Painel de Opções Objetivas -->
-                <div id="quiz-options-container" class="flex flex-col gap-2">
+                <div id="quiz-options-container" class="flex flex-col gap-2 font-sans">
                     <!-- Gerado Dinamicamente -->
                 </div>
 
-                <!-- Painel de Resposta Dissertativa -->
                 <div id="quiz-dissertative-container" class="hidden flex flex-col gap-2">
                     <label for="dissertative-user-answer" class="text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">SUA RESPOSTA COMPLETA:</label>
                     <textarea id="dissertative-user-answer" rows="4" placeholder="Escreva sua explicação aqui, use os termos das resoluções para uma avaliação precisa..." class="w-full p-3 text-xs border-2 border-brand-dark rounded-lg focus:outline-none focus:border-brand-accent bg-white dark:bg-brand-panelDark dark:border-brand-lightBorder text-stone-800 dark:text-stone-200 resize-none"></textarea>
@@ -205,7 +204,6 @@
                 </div>
             </div>
 
-            <!-- Controles do Simulado -->
             <div class="flex justify-between items-center pt-3 border-t border-brand-dark dark:border-brand-lightBorder gap-2">
                 <button onclick="prevQuestion()" class="flex-1 text-center font-mono font-bold text-xs bg-brand-panel text-brand-dark border-2 border-brand-dark py-2.5 rounded active:bg-stone-50 dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200 dark:active:bg-stone-800">
                     ← Voltar
@@ -218,7 +216,6 @@
                 </button>
             </div>
 
-            <!-- Feedback Expandido -->
             <div id="quiz-feedback" class="hidden bg-stone-50 dark:bg-stone-900 border-2 border-brand-dark dark:border-brand-lightBorder p-3 rounded-lg flex flex-col gap-2">
                 <div class="flex items-center gap-1.5">
                     <span id="feedback-status-icon" class="text-xl"></span>
@@ -226,7 +223,6 @@
                 </div>
                 <p id="feedback-explanation" class="text-[11px] text-stone-700 dark:text-stone-300 leading-relaxed"></p>
                 
-                <!-- Exclusivo Dissertativa: Palavras-chave Encontradas -->
                 <div id="dissertative-analysis-box" class="hidden border-t border-dashed border-stone-300 dark:border-stone-700 pt-2 mt-1">
                     <span class="text-[10px] font-mono font-bold text-brand-dark dark:text-gray-200">Análise de Conceitos Utilizados:</span>
                     <div id="keywords-matched-list" class="flex flex-wrap gap-1 mt-1.5">
@@ -251,16 +247,13 @@
                 <span id="flashcard-counter" class="font-mono text-xs font-bold bg-brand-bg px-2 py-1 rounded border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">0 / 0</span>
             </div>
 
-            <!-- Flashcard Interativo -->
             <div class="card-perspective w-full h-[220px] cursor-pointer" onclick="flipCard()">
                 <div id="flashcard-inner" class="card-inner w-full h-full relative border-2 border-brand-dark rounded-lg retro-shadow-sm bg-brand-bg dark:bg-brand-bgDark dark:border-brand-lightBorder">
-                    <!-- Frente -->
                     <div class="card-front absolute w-full h-full p-4 flex flex-col justify-between items-center text-center">
                         <span class="text-[9px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark uppercase tracking-wider">PERGUNTA CHAVE</span>
                         <p id="flashcard-question" class="text-sm font-serif font-bold text-brand-dark my-auto px-2 dark:text-gray-100">Carregando pergunta...</p>
                         <span class="text-[9px] font-mono text-brand-accent font-bold">Toque para revelar a resposta 🔄</span>
                     </div>
-                    <!-- Verso -->
                     <div class="card-back absolute w-full h-full p-4 flex flex-col justify-between items-center text-center bg-stone-900 text-white rounded-lg">
                         <span class="text-[9px] font-mono font-bold text-brand-pink uppercase tracking-wider">RESPOSTA & FUNDAMENTAÇÃO</span>
                         <p id="flashcard-answer" class="text-xs font-sans font-medium text-stone-200 my-auto overflow-y-auto max-h-[110px] px-2 leading-relaxed">Carregando resposta...</p>
@@ -269,7 +262,6 @@
                 </div>
             </div>
 
-            <!-- Controles do Flashcard -->
             <div class="flex flex-col gap-2 pt-2 border-t border-brand-dark dark:border-brand-lightBorder">
                 <div class="flex justify-between gap-2">
                     <button onclick="prevFlashcard()" class="flex-1 font-mono font-bold text-xs bg-brand-panel hover:bg-stone-50 border-2 border-brand-dark py-2.5 rounded text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
@@ -290,7 +282,7 @@
             </div>
         </div>
 
-        <!-- ABA 3: PODSTUDY (REESTRUTURADO) -->
+        <!-- ABA 3: PODSTUDY -->
         <div id="section-podcast" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
             <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
                 <div>
@@ -300,7 +292,6 @@
                 <span class="text-[9px] bg-brand-accent text-white font-mono font-bold px-1.5 py-0.5 rounded">6 TRILHAS</span>
             </div>
 
-            <!-- Seleção de Track / Capítulo (Máximo de 1 minuto por faixa) -->
             <div class="flex flex-col gap-2">
                 <span class="text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">Escolha uma faixa temática:</span>
                 <div class="grid grid-cols-1 gap-1.5 max-h-[160px] overflow-y-auto pr-1">
@@ -331,7 +322,6 @@
                 </div>
             </div>
 
-            <!-- Player do Podcast -->
             <div class="bg-brand-bg dark:bg-brand-bgDark rounded-lg border-2 border-brand-dark dark:border-brand-lightBorder p-4 flex flex-col items-center text-center gap-3">
                 <div class="w-12 h-12 bg-brand-dark dark:bg-brand-lightBorder rounded-full flex items-center justify-center text-white dark:text-brand-dark text-xl" id="pod-avatar">
                     🎓
@@ -342,7 +332,6 @@
                     <p class="text-[9px] text-brand-muted dark:text-brand-mutedDark mt-0.5">Professor Freudinho & Aluna Lelé</p>
                 </div>
 
-                <!-- Slider de Progresso e Minutagem -->
                 <div class="w-full flex flex-col gap-1.5 mt-2">
                     <input type="range" id="pod-progress-slider" min="0" max="100" value="0" oninput="onSliderDrag(this.value)" class="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-lg appearance-none cursor-pointer accent-brand-accent">
                     <div class="flex justify-between text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">
@@ -351,7 +340,6 @@
                     </div>
                 </div>
 
-                <!-- Ondas de Áudio Animadas -->
                 <div class="flex items-center gap-1 h-6 justify-center w-full my-1" id="sound-waves">
                     <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-2 transition-all duration-300" id="wave-1"></div>
                     <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-3 transition-all duration-300" id="wave-2"></div>
@@ -361,12 +349,10 @@
                     <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-3 transition-all duration-300" id="wave-6"></div>
                 </div>
 
-                <!-- Transcrição Ativa com Visual estilo WhatsApp -->
                 <div id="podcast-chat-container" class="bg-stone-100 dark:bg-stone-900/60 p-3 rounded-lg border border-brand-dark dark:border-brand-lightBorder w-full h-[220px] overflow-y-auto flex flex-col gap-3 text-left">
                     <!-- Balões gerados dinamicamente -->
                 </div>
 
-                <!-- Controles do Áudio Unificados -->
                 <div class="flex gap-2 w-full">
                     <button id="btn-play-podcast" onclick="togglePodcast()" class="flex-grow bg-brand-accent text-white border-2 border-brand-dark dark:border-brand-lightBorder py-2 rounded font-mono font-bold text-xs retro-shadow-sm active:translate-y-0.5">
                         ▶️ Iniciar Podcast
@@ -387,29 +373,179 @@
                 </div>
             </div>
 
-            <!-- Chat Area -->
             <div id="tutor-chat-box" class="h-[220px] border-2 border-brand-dark dark:border-brand-lightBorder rounded-lg p-3 bg-stone-50 dark:bg-stone-900 overflow-y-auto flex flex-col gap-2">
                 <div class="self-start max-w-[90%] bg-brand-panel dark:bg-brand-panelDark p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-xs leading-relaxed">
                     <span class="font-bold text-brand-accent block mb-0.5 font-mono">🤖 Assistente:</span>
-                    Olá! Estou abastecido com todo o conteúdo das Resoluções CFP 06/2019 e 31/2022, o manual do SATEPSI e as dúvidas de psicodiagnóstico[cite: 1, 3, 4].
+                    Olá! Estou abastecido com todo o conteúdo das Resoluções CFP 06/2019 e 31/2022, o manual do SATEPSI e as dúvidas de psicodiagnóstico.
                     <br><br>
                     Pergunte-me qualquer conceito para sua prova! Exemplos:
                     <ul class="list-disc pl-4 mt-1 font-semibold flex flex-col gap-0.5">
-                        <li>"Laudo vs Relatório"[cite: 4]</li>
-                        <li>"Vigência de estudos de um teste no Satepsi"[cite: 3]</li>
-                        <li>"O que pode ir na Declaração?"[cite: 4]</li>
+                        <li>"Laudo vs Relatório"</li>
+                        <li>"Vigência de estudos de um teste no Satepsi"</li>
+                        <li>"O que pode ir na Declaração?"</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Entrada de Mensagem com ajuste flexível de teclado -->
             <div class="flex gap-1.5">
-                <input type="text" id="tutor-user-input" placeholder="Pergunte sobre as resoluções..." onkeydown="if(event.key === 'Enter') sendTutorMessage()" class="flex-grow p-2.5 border-2 border-brand-dark dark:border-brand-lightBorder rounded bg-white dark:bg-brand-panelDark text-xs focus:outline-none focus:border-brand-accent">
+                <input type="text" id="tutor-user-input" placeholder="Pergunte sobre as resoluções..." onkeydown="if(event.key === 'Enter') sendTutorMessage()" class="flex-grow p-2.5 border-2 border-brand-dark dark:border-brand-lightBorder rounded bg-white dark:bg-brand-panelDark text-xs focus:outline-none focus:border-brand-accent text-stone-800 dark:text-white">
                 <button onclick="sendTutorMessage()" class="font-mono font-bold text-xs bg-brand-dark text-white border-2 border-brand-dark dark:border-brand-lightBorder px-4 rounded hover:bg-stone-800">Enviar</button>
             </div>
         </div>
 
-        <!-- ABA 5: RESUMOS DAS RESOLUÇÕES -->
+        <!-- ABA 5: PSICOGAMES (NOVA ABA DE JOGOS) -->
+        <div id="section-games" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            
+            <!-- Menu Principal de Jogos -->
+            <div id="games-menu" class="flex flex-col gap-4">
+                <div class="border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                    <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Estude brincando</span>
+                    <h2 class="text-lg font-serif font-bold">PsicoGames 🎮</h2>
+                    <p class="text-[11px] text-brand-muted dark:text-brand-mutedDark">Acumule pontos e quebre recordes!</p>
+                </div>
+
+                <!-- Grid de Seleção de Jogos -->
+                <div class="grid grid-cols-1 gap-3">
+                    
+                    <!-- Jogo 1: SATEPSI Match -->
+                    <button onclick="startGame('match')" class="w-full text-left p-3.5 bg-brand-bg hover:bg-stone-100 dark:bg-brand-bgDark border-2 border-brand-dark dark:border-brand-lightBorder rounded-lg retro-shadow-sm transition-all flex items-start gap-3">
+                        <span class="text-3xl p-1 bg-white dark:bg-stone-800 rounded-lg border border-brand-dark dark:border-brand-lightBorder">🃏</span>
+                        <div>
+                            <h3 class="font-mono font-bold text-xs text-brand-accent uppercase">1. SATEPSI Match</h3>
+                            <p class="text-[11px] text-stone-700 dark:text-stone-300 font-sans mt-0.5">Jogo de memória para relacionar conceitos psicométricos e prazos.</p>
+                            <span id="record-match-txt" class="text-[9px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark mt-1 block">Recorde: --</span>
+                        </div>
+                    </button>
+
+                    <!-- Jogo 2: Inspetor de Documentos -->
+                    <button onclick="startGame('inspector')" class="w-full text-left p-3.5 bg-brand-bg hover:bg-stone-100 dark:bg-brand-bgDark border-2 border-brand-dark dark:border-brand-lightBorder rounded-lg retro-shadow-sm transition-all flex items-start gap-3">
+                        <span class="text-3xl p-1 bg-white dark:bg-stone-800 rounded-lg border border-brand-dark dark:border-brand-lightBorder">🕵️‍♀️</span>
+                        <div>
+                            <h3 class="font-mono font-bold text-xs text-brand-accent uppercase">2. Inspetor de Documentos</h3>
+                            <p class="text-[11px] text-stone-700 dark:text-stone-300 font-sans mt-0.5">Avalie os relatórios e laudos gerados. Aprove ou rejeite antes do tempo acabar!</p>
+                            <span id="record-inspector-txt" class="text-[9px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark mt-1 block">Recorde: --</span>
+                        </div>
+                    </button>
+
+                    <!-- Jogo 3: Quem Quer Ser Um Freudinho -->
+                    <button onclick="startGame('freudinho')" class="w-full text-left p-3.5 bg-brand-bg hover:bg-stone-100 dark:bg-brand-bgDark border-2 border-brand-dark dark:border-brand-lightBorder rounded-lg retro-shadow-sm transition-all flex items-start gap-3">
+                        <span class="text-3xl p-1 bg-white dark:bg-stone-800 rounded-lg border border-brand-dark dark:border-brand-lightBorder">🎓</span>
+                        <div>
+                            <h3 class="font-mono font-bold text-xs text-brand-accent uppercase">3. Quem quer ser Freudinho?</h3>
+                            <p class="text-[11px] text-stone-700 dark:text-stone-300 font-sans mt-0.5">Trivia rápida com bônus por sequência e poderes especiais de ajuda.</p>
+                            <span id="record-freudinho-txt" class="text-[9px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark mt-1 block">Recorde: --</span>
+                        </div>
+                    </button>
+                    
+                </div>
+            </div>
+
+            <!-- TELA: SATEPSI Match (Memória) -->
+            <div id="game-match" class="hidden flex flex-col gap-3">
+                <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                    <button onclick="returnToGamesMenu()" class="font-mono text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-brand-dark px-2 py-1 rounded dark:bg-stone-800 text-stone-900 dark:text-white">← Voltar</button>
+                    <span class="font-mono text-xs font-bold bg-brand-pink/30 px-2 py-0.5 rounded text-brand-dark dark:text-brand-pink">SATEPSI MATCH 🃏</span>
+                    <div class="flex gap-2 text-[10px] font-mono font-bold">
+                        <span>Tempo: <span id="match-timer">0s</span></span>
+                    </div>
+                </div>
+
+                <p class="text-[11px] text-center italic text-brand-muted dark:text-brand-mutedDark">Encontre os pares corretos combinando a definição técnica com o prazo ou diretriz correspondente!</p>
+
+                <!-- Grid de Cartas -->
+                <div id="match-grid" class="grid grid-cols-2 gap-2.5 my-2">
+                    <!-- Gerado dinamicamente por JS -->
+                </div>
+
+                <div id="match-congrats" class="hidden p-3 bg-emerald-50 dark:bg-emerald-950 border border-emerald-500 rounded-lg text-center">
+                    <h4 class="font-bold text-emerald-800 dark:text-emerald-300 text-sm">🎉 Parabéns! Você concluiu o SATEPSI Match!</h4>
+                    <p class="text-[11px] text-emerald-950 dark:text-emerald-100 mt-1">Tempo final: <span id="match-final-time">0</span> segundos.</p>
+                </div>
+            </div>
+
+            <!-- TELA: Inspetor de Documentos -->
+            <div id="game-inspector" class="hidden flex flex-col gap-3">
+                <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                    <button onclick="returnToGamesMenu()" class="font-mono text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-brand-dark px-2 py-1 rounded dark:bg-stone-800 text-stone-900 dark:text-white">← Voltar</button>
+                    <span class="font-mono text-xs font-bold bg-brand-pink/30 px-2 py-0.5 rounded text-brand-dark dark:text-brand-pink">INSPEÇÃO ÉTICA 🕵️‍♀️</span>
+                    <div class="flex gap-3 text-[10px] font-mono font-bold">
+                        <span>Tempo: <span id="inspector-timer">30s</span></span>
+                        <span>Pontos: <span id="inspector-score">0</span></span>
+                    </div>
+                </div>
+
+                <!-- Documento a ser Avaliado -->
+                <div class="bg-brand-panel dark:bg-brand-panelDark p-4 rounded-lg border-2 border-brand-dark dark:border-brand-lightBorder relative overflow-hidden retro-shadow-sm min-h-[160px]">
+                    <div class="absolute top-0 right-0 bg-brand-accent text-white font-mono text-[8px] font-bold px-2 py-0.5 uppercase tracking-wider rounded-bl border-l border-b border-brand-dark dark:border-brand-lightBorder">PSICÓLOGO EMISSOR</div>
+                    <span id="doc-stamp" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-4 font-mono font-extrabold text-xl uppercase tracking-widest p-2 rounded rotate-12 z-20"></span>
+                    
+                    <div class="mt-2 space-y-1 text-left font-mono text-[9px] text-brand-muted dark:text-brand-mutedDark">
+                        <div>DOCUMENTO: <strong id="doc-type-badge" class="text-brand-accent">LAUDO</strong></div>
+                        <div class="border-b border-dashed border-stone-300 dark:border-stone-700 my-1"></div>
+                    </div>
+                    
+                    <p id="doc-text" class="text-xs text-stone-800 dark:text-stone-100 font-serif leading-relaxed mt-3 italic">
+                        "Documento de teste..."
+                    </p>
+                </div>
+
+                <!-- Botões de Decisão -->
+                <div class="grid grid-cols-2 gap-3 mt-1.5">
+                    <button onclick="handleInspectDecision(false)" class="bg-rose-100 hover:bg-rose-200 text-rose-950 font-mono font-bold text-xs border-2 border-brand-dark py-3.5 rounded-lg active:translate-y-0.5 retro-shadow-sm dark:border-brand-lightBorder dark:bg-rose-950/40 dark:text-rose-200">
+                        🛑 REJEITAR (Falta Ética)
+                    </button>
+                    <button onclick="handleInspectDecision(true)" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-950 font-mono font-bold text-xs border-2 border-brand-dark py-3.5 rounded-lg active:translate-y-0.5 retro-shadow-sm dark:border-brand-lightBorder dark:bg-emerald-950/40 dark:text-emerald-200">
+                        ✅ APROVAR (Correto)
+                    </button>
+                </div>
+
+                <div id="inspector-feedback" class="hidden p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-[11px] font-mono mt-1">
+                    <p id="inspector-feedback-txt"></p>
+                </div>
+            </div>
+
+            <!-- TELA: Quem quer ser Freudinho? -->
+            <div id="game-freudinho" class="hidden flex flex-col gap-3">
+                <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                    <button onclick="returnToGamesMenu()" class="font-mono text-[10px] font-bold bg-stone-100 hover:bg-stone-200 border border-brand-dark px-2 py-1 rounded dark:bg-stone-800 text-stone-900 dark:text-white">← Voltar</button>
+                    <span class="font-mono text-xs font-bold bg-brand-pink/30 px-2 py-0.5 rounded text-brand-dark dark:text-brand-pink">QUER SER UM FREUDINHO? 🎓</span>
+                    <div class="flex gap-3 text-[10px] font-mono font-bold">
+                        <span>Fogo/Streak: <span id="freudinho-streak" class="text-brand-accent">🔥 0</span></span>
+                    </div>
+                </div>
+
+                <!-- Pergunta -->
+                <div class="bg-brand-bg dark:bg-brand-bgDark p-3 rounded-lg border border-brand-dark dark:border-brand-lightBorder">
+                    <span class="text-[9px] font-mono bg-brand-accent text-white px-1.5 py-0.5 rounded font-bold">TRIVIA DIRETA</span>
+                    <p id="freudinho-question" class="font-sans font-semibold text-xs md:text-sm leading-relaxed mt-2 text-stone-800 dark:text-stone-200">Buscando pergunta...</p>
+                </div>
+
+                <!-- Alternativas -->
+                <div id="freudinho-alternatives" class="flex flex-col gap-2 font-sans">
+                    <!-- Gerado Dinamicamente -->
+                </div>
+
+                <!-- Área de Poderes / Linhas de Ajuda -->
+                <div class="border-t border-brand-dark dark:border-brand-lightBorder pt-3 mt-1 flex flex-col gap-2">
+                    <span class="text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">AJUDAS ESPECIAIS (Uso Único por Partida):</span>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="btn-power-freudinho" onclick="usePowerFreudinho()" class="p-2 bg-brand-panel dark:bg-brand-panelDark border-2 border-brand-dark dark:border-brand-lightBorder rounded text-[10px] font-mono font-bold hover:bg-stone-100 text-stone-800 dark:text-white active:translate-y-0.5">
+                            🎓 Ajuda do Freudinho (50/50)
+                        </button>
+                        <button id="btn-power-lele" onclick="usePowerLele()" class="p-2 bg-brand-panel dark:bg-brand-panelDark border-2 border-brand-dark dark:border-brand-lightBorder rounded text-[10px] font-mono font-bold hover:bg-stone-100 text-stone-800 dark:text-white active:translate-y-0.5">
+                            🌸 Dica da Lelé
+                        </button>
+                    </div>
+                </div>
+
+                <div id="freudinho-clue-box" class="hidden p-2.5 bg-amber-50 dark:bg-stone-900 border border-brand-accent rounded text-[11px] text-stone-800 dark:text-stone-200 leading-relaxed font-sans mt-1">
+                    <strong>Dica da Lelé 🌸:</strong> <span id="freudinho-clue-text">...</span>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- ABA 6: RESUMOS DAS RESOLUÇÕES -->
         <div id="section-summaries" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
             <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
                 <div>
@@ -418,13 +554,11 @@
                 </div>
             </div>
 
-            <!-- Tabs Internas de Resumo -->
             <div class="flex border-b border-brand-dark dark:border-brand-lightBorder gap-1">
                 <button onclick="showSummarySection('summary-docs')" id="btn-sum-docs" class="flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-dark text-white rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark">Res. 06/2019 (Doc)</button>
                 <button onclick="showSummarySection('summary-satepsi')" id="btn-sum-satepsi" class="flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-panel text-brand-dark rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200">Res. 31/2022 (Satepsi)</button>
             </div>
 
-            <!-- Conteúdo Dinâmico -->
             <div id="summary-content" class="text-xs text-stone-800 dark:text-stone-200 leading-relaxed max-h-[220px] overflow-y-auto">
                 <!-- Inserido dinamicamente -->
             </div>
@@ -434,35 +568,39 @@
 
     <!-- FOOTER VINTAGE SIMPLIFICADO -->
     <footer class="w-full bg-brand-panel dark:bg-brand-panelDark border-t-2 border-brand-dark dark:border-brand-lightBorder p-3 text-center text-[9px] font-mono text-brand-muted dark:text-brand-mutedDark">
-        Psicodidática • Versão Mobile 1.2 • 2026
+        Psicodidática • Versão Mobile 1.3 • 2026
     </footer>
 
-    <!-- NAVEGAÇÃO INFERIOR ESTILO IOS -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-brand-panel dark:bg-brand-panelDark border-t-2 border-brand-dark dark:border-brand-lightBorder px-2 py-1 flex justify-around items-center z-40 safe-bottom">
-        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-accent">
-            <span class="text-base">📝</span>
+    <!-- NAVEGAÇÃO INFERIOR ESTILO IOS (OTIMIZADO) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-brand-panel dark:bg-brand-panelDark border-t-2 border-brand-dark dark:border-brand-lightBorder px-1 py-1 flex justify-around items-center z-40 safe-bottom">
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-accent">
+            <span class="text-sm">📝</span>
             <span>Simulado</span>
         </button>
-        <button onclick="switchTab('flashcards')" id="tab-flashcards" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
-            <span class="text-base">🗂️</span>
+        <button onclick="switchTab('flashcards')" id="tab-flashcards" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-sm">🗂️</span>
             <span>Cards</span>
         </button>
-        <button onclick="switchTab('podcast')" id="tab-podcast" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
-            <span class="text-base">🎙️</span>
+        <button onclick="switchTab('podcast')" id="tab-podcast" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-sm">🎙️</span>
             <span>PodStudy</span>
         </button>
-        <button onclick="switchTab('tutor')" id="tab-tutor" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
-            <span class="text-base">🧠</span>
-            <span>AI Tutor</span>
+        <button onclick="switchTab('tutor')" id="tab-tutor" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-sm">🧠</span>
+            <span>Tutor</span>
         </button>
-        <button onclick="switchTab('summaries')" id="tab-summaries" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
-            <span class="text-base">📖</span>
+        <button onclick="switchTab('games')" id="tab-games" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-sm">🎮</span>
+            <span>Jogos</span>
+        </button>
+        <button onclick="switchTab('summaries')" id="tab-summaries" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-sm">📖</span>
             <span>Resumos</span>
         </button>
     </nav>
 
     <script>
-        // Questões Objetivas
+        // Questões Objetivas do Simulado
         const questionsList = [
             {
                 id: 1,
@@ -684,70 +822,492 @@
             `
         };
 
-        // Podcast Dividido - Diálogos Rápidos e Naturais entre Freudinho e Lelé (Menos de 1 minuto por faixa)
-        const podcastTracks = [
+        // SINTETIZADOR DE ÁUDIO WEB (Efeitos sonoros nativos excelentes)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let soundMuted = false;
+
+        function playSound(type) {
+            if (soundMuted) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'success') {
+                    // Nota dupla ascendente alegre
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, audioCtx.currentTime); // A4
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'error') {
+                    // Nota baixa ruidosa descendo (erro)
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.2); 
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'flip') {
+                    // Click curto de carta
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } else if (type === 'fanfare') {
+                    // Mini fanfarra triunfal
+                    const notes = [261.63, 329.63, 392.00, 523.25]; // C E G C
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.value = freq;
+                        g.gain.setValueAtTime(0.08, audioCtx.currentTime + idx * 0.1);
+                        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.1 + 0.2);
+                        o.start(audioCtx.currentTime + idx * 0.1);
+                        o.stop(audioCtx.currentTime + idx * 0.1 + 0.2);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio Context Error: ", e);
+            }
+        }
+
+        function toggleMute() {
+            soundMuted = !soundMuted;
+            document.getElementById('btn-sound-global').innerText = soundMuted ? '🔇' : '🔊';
+        }
+
+        // CONTROLADORES DA NAVEGAÇÃO DOS JOGOS
+        function startGame(gameKey) {
+            // Esconde menu
+            document.getElementById('games-menu').classList.add('hidden');
+            
+            // Esconde todas as telas de jogos antes
+            document.getElementById('game-match').classList.add('hidden');
+            document.getElementById('game-inspector').classList.add('hidden');
+            document.getElementById('game-freudinho').classList.add('hidden');
+
+            playSound('fanfare');
+
+            if (gameKey === 'match') {
+                document.getElementById('game-match').classList.remove('hidden');
+                initMatchGame();
+            } else if (gameKey === 'inspector') {
+                document.getElementById('game-inspector').classList.remove('hidden');
+                initInspectorGame();
+            } else if (gameKey === 'freudinho') {
+                document.getElementById('game-freudinho').classList.remove('hidden');
+                initFreudinhoGame();
+            }
+        }
+
+        function returnToGamesMenu() {
+            // Parar loops de timers se houver
+            stopAllGameTimers();
+
+            document.getElementById('game-match').classList.add('hidden');
+            document.getElementById('game-inspector').classList.add('hidden');
+            document.getElementById('game-freudinho').classList.add('hidden');
+            document.getElementById('games-menu').classList.remove('hidden');
+            
+            // Recarrega recordes na tela principal
+            displayHighScores();
+        }
+
+        function stopAllGameTimers() {
+            clearInterval(matchGameInterval);
+            clearInterval(inspectorGameInterval);
+        }
+
+        // 1. LÓGICA DO SATEPSI MATCH (Memory Game)
+        let matchCards = [];
+        let firstCardSelected = null;
+        let secondCardSelected = null;
+        let matchElapsedSeconds = 0;
+        let matchGameInterval = null;
+        let matchMatchesFound = 0;
+
+        const matchCardsPool = [
+            { id: 1, text: "Guarda Prontuários", pair: "5 anos mínimo" },
+            { id: 2, text: "Estudo de Normatização", pair: "15 anos de validade" },
+            { id: 3, text: "Recurso CCAP no CFP", pair: "30 dias úteis" },
+            { id: 4, text: "Declaração de AP", pair: "Vedado colocar sintomas" },
+            { id: 5, text: "Atestado Psicológico", pair: "Contém diagnóstico conclusivo" },
+            { id: 6, text: "Entrevista Devolutiva", pair: "Dever ético obrigatório" }
+        ];
+
+        function initMatchGame() {
+            firstCardSelected = null;
+            secondCardSelected = null;
+            matchElapsedSeconds = 0;
+            matchMatchesFound = 0;
+            document.getElementById('match-timer').innerText = "0s";
+            document.getElementById('match-congrats').classList.add('hidden');
+
+            // Embaralha pool e seleciona 4 pares (8 cartas total)
+            const chosenPairs = matchCardsPool.sort(() => 0.5 - Math.random()).slice(0, 4);
+            let deck = [];
+            chosenPairs.forEach(p => {
+                deck.push({ id: p.id, text: p.text, type: 'concept', pairedText: p.pair });
+                deck.push({ id: p.id, text: p.pair, type: 'deadline', pairedText: p.text });
+            });
+            deck = deck.sort(() => 0.5 - Math.random());
+
+            const grid = document.getElementById('match-grid');
+            grid.innerHTML = '';
+
+            deck.forEach((cardData, idx) => {
+                const cardOuter = document.createElement('div');
+                cardOuter.className = "card-perspective h-[85px] w-full cursor-pointer";
+                cardOuter.onclick = () => selectMatchCard(cardOuter, cardData);
+
+                const cardInner = document.createElement('div');
+                cardInner.id = `match-card-inner-${idx}`;
+                cardInner.className = "card-inner w-full h-full relative border-2 border-brand-dark rounded-lg retro-shadow-sm bg-white dark:bg-brand-panelDark dark:border-brand-lightBorder";
+
+                // Frente
+                const front = document.createElement('div');
+                front.className = "card-front absolute w-full h-full flex items-center justify-center bg-brand-pink/30 text-xl";
+                front.innerText = "🌸";
+
+                // Verso
+                const back = document.createElement('div');
+                back.className = "card-back absolute w-full h-full p-1 text-[9px] font-mono font-bold flex items-center justify-center text-center bg-white dark:bg-stone-900 leading-tight text-brand-dark dark:text-white";
+                back.innerText = cardData.text;
+
+                cardInner.appendChild(front);
+                cardInner.appendChild(back);
+                cardOuter.appendChild(cardInner);
+                grid.appendChild(cardOuter);
+            });
+
+            // Inicia Timer
+            clearInterval(matchGameInterval);
+            matchGameInterval = setInterval(() => {
+                matchElapsedSeconds++;
+                document.getElementById('match-timer').innerText = `${matchElapsedSeconds}s`;
+            }, 1000);
+        }
+
+        function selectMatchCard(element, data) {
+            const cardInner = element.querySelector('.card-inner');
+            if (cardInner.classList.contains('card-flipped') || secondCardSelected !== null) return;
+
+            playSound('flip');
+            cardInner.classList.add('card-flipped');
+
+            if (firstCardSelected === null) {
+                firstCardSelected = { element, data };
+            } else {
+                secondCardSelected = { element, data };
+                // Checa par
+                if (firstCardSelected.data.id === secondCardSelected.data.id) {
+                    // Match correto
+                    playSound('success');
+                    matchMatchesFound++;
+                    firstCardSelected = null;
+                    secondCardSelected = null;
+
+                    if (matchMatchesFound === 4) {
+                        clearInterval(matchGameInterval);
+                        document.getElementById('match-final-time').innerText = matchElapsedSeconds;
+                        document.getElementById('match-congrats').classList.remove('hidden');
+                        
+                        // Grava recorde (menor tempo é melhor)
+                        const bestTime = localStorage.getItem('score_match');
+                        if (!bestTime || matchElapsedSeconds < parseInt(bestTime)) {
+                            localStorage.setItem('score_match', matchElapsedSeconds);
+                        }
+                    }
+                } else {
+                    // Errou
+                    playSound('error');
+                    setTimeout(() => {
+                        firstCardSelected.element.querySelector('.card-inner').classList.remove('card-flipped');
+                        secondCardSelected.element.querySelector('.card-inner').classList.remove('card-flipped');
+                        firstCardSelected = null;
+                        secondCardSelected = null;
+                    }, 1000);
+                }
+            }
+        }
+
+        // 2. LÓGICA DO INSPETOR DE DOCUMENTOS
+        let inspectorTimerValue = 30;
+        let inspectorScoreValue = 0;
+        let inspectorGameInterval = null;
+        let currentDocument = null;
+
+        const docsPool = [
             {
-                title: "Trilha 1: As 2 Fontes Fundamentais",
-                duration: 45,
-                script: [
-                    { host: "Lelé", text: "Freudinho, me ajuda aqui! Tem como eu fazer um processo de avaliação psicológica inteiro usando só duas fontes?", start: 0, end: 12 },
-                    { host: "Freudinho", text: "Claro que sim, Lelé! A Resolução trinta e um diz que se você fizer entrevista e observação comportamental de qualidade, já tem duas fontes fundamentais válidas para fechar o processo.", start: 12, end: 28 },
-                    { host: "Lelé", text: "Nossa, que alívio! Eu achava que a aplicação de testes aprovados pelo Satepsi era sempre obrigatória.", start: 28, end: 36 },
-                    { host: "Freudinho", text: "Não, eles são ótimas ferramentas complementares, mas o seu raciocínio clínico vale muito mais!", start: 36, end: 45 }
-                ]
+                type: "DECLARAÇÃO",
+                text: "Declaramos para os devidos fins de dispensa laboral que o paciente apresenta sintomatologia grave compatível com Transtorno Depressivo (CID10-F32).",
+                correct: false, // Incorreto: Declaração não pode conter sintomas/diagnósticos
+                explanation: "Declarações servem para fins burocráticos. É vedado colocar diagnósticos, CIDs ou sintomas."
             },
             {
-                title: "Trilha 2: O Limite da Declaração",
-                duration: 40,
-                script: [
-                    { host: "Lelé", text: "Professor, na questão sete da prova caiu sobre a Declaração. O que eu posso de fato escrever nela?", start: 0, end: 10 },
-                    { host: "Freudinho", text: "Anote aí: apenas fatos burocráticos! Comparecimento da pessoa, horários, dias de consulta e tempo de tratamento.", start: 10, end: 22 },
-                    { host: "Lelé", text: "E posso colocar que o paciente está com sintomas de ansiedade grave ou depressão?", start: 22, end: 30 },
-                    { host: "Freudinho", text: "Nunca! É terminantemente vedado colocar sintomas, diagnósticos ou estados psicológicos em uma Declaração. Lembre-se disso!", start: 30, end: 40 }
-                ]
+                type: "ATESTADO",
+                text: "Atesto que o paciente foi submetido a processo de avaliação psicológica, apresentando condições cognitivas adequadas para a prática de direção veicular.",
+                correct: true, // Correto
+                explanation: "O Atestado é o documento oficial que serve para asseverar condições de aptidão ou inaptidão mental."
             },
             {
-                title: "Trilha 3: Prazos do SATEPSI",
-                duration: 48,
-                script: [
-                    { host: "Lelé", text: "Socorro, Freudinho! São muitos prazos diferentes na Resolução trinta e um. Qual é o limite de validade de um teste?", start: 0, end: 12 },
-                    { host: "Freudinho", text: "Calma, Lelé. Os estudos de fidedignidade, precisão e normatização nacional duram no máximo quinze anos. Passou disso, precisa atualizar.", start: 12, end: 28 },
-                    { host: "Lelé", text: "Entendi! E se o teste for reprovado e a editora quiser recorrer?", start: 28, end: 36 },
-                    { host: "Freudinho", text: "Aí são trinta dias úteis após a plenária do Conselho Federal de Psicologia para enviar o recurso técnico.", start: 36, end: 48 }
-                ]
+                type: "DECLARAÇÃO",
+                text: "Declaramos que Maria Eduarda compareceu a este consultório de psicologia na presente data para acompanhamento psicoterapêutico das 14:00 às 15:00.",
+                correct: true, // Correto
+                explanation: "A Declaração é puramente de caráter burocrático (registro de presença, dias e horários)."
             },
             {
-                title: "Trilha 4: Psicodiagnóstico e Forças",
-                duration: 42,
-                script: [
-                    { host: "Lelé", text: "Professor Freudinho, psicodiagnóstico serve só para dar rótulo ou CID pras pessoas?", start: 0, end: 10 },
-                    { host: "Freudinho", text: "Excelente pergunta! Antigamente focavam muito na disfunção, mas hoje o processo também busca mapear as forças e fatores protetivos do paciente.", start: 10, end: 25 },
-                    { host: "Lelé", text: "Ah, que bom! Assim fica mais humanizado e ajuda de verdade na intervenção clínica posterior, né?", start: 25, end: 34 },
-                    { host: "Freudinho", text: "Perfeitamente. Ele identifica potencialidades para promover saúde mental.", start: 34, end: 42 }
-                ]
+                type: "LAUDO",
+                text: "Em conclusão ao processo diagnóstico clínico estruturado, infere-se que o paciente necessita de psicoterapia continuada. (Nota: O psicólogo omitiu as referências científicas do teste no final).",
+                correct: false, // Incorreto: Laudo exige referências
+                explanation: "O Laudo é um documento de valor científico e obrigatoriamente deve conter as referências bibliográficas científicas e metodológicas."
             },
             {
-                title: "Trilha 5: Devolutiva Obrigatória",
-                duration: 40,
-                script: [
-                    { host: "Lelé", text: "Acabei a avaliação! Posso só mandar o laudo por e-mail para o paciente e encerrar o caso?", start: 0, end: 11 },
-                    { host: "Freudinho", text: "De jeito nenhum! Realizar ao menos uma entrevista devolutiva é um dever ético obrigatório para entrega de laudos ou relatórios.", start: 11, end: 25 },
-                    { host: "Lelé", text: "E se a pessoa sumir ou se recusar a ir na sessão?", start: 25, end: 31 },
-                    { host: "Freudinho", text: "Aí você deve documentar e deixar registrado em prontuário os motivos da impossibilidade.", start: 31, end: 40 }
-                ]
-            },
-            {
-                title: "Trilha 6: Desafios das TDICs",
-                duration: 50,
-                script: [
-                    { host: "Lelé", text: "Adoro tecnologia! Mas quais os principais desafios com o uso de computadores e testes online hoje em dia?", start: 0, end: 12 },
-                    { host: "Freudinho", text: "O grande desafio é avaliar empiricamente como essas tecnologias influenciam o vínculo e o rapport com o paciente durante a testagem.", start: 12, end: 28 },
-                    { host: "Lelé", text: "Sim! Porque sem empatia e um bom vínculo, os resultados podem ficar bem distorcidos, né?", start: 28, end: 38 },
-                    { host: "Freudinho", text: "Exato! O Satepsi tem exigido rigor nesses estudos de equivalência para garantir aplicações remotas seguras e éticas.", start: 38, end: 50 }
-                ]
+                type: "ATESTADO",
+                text: "Venho por meio deste atestar que o examinado encontra-se sob estresse severo de ansiedade de pânico laboral generalizado.",
+                correct: false, // Incorreto: Deve asseverar aptidão/inaptidão baseado em processo técnico, de forma direta
+                explanation: "O Atestado não é descritivo de sofrimento, mas assevera de forma conclusiva a aptidão ou incapacidade para determinado fim."
             }
         ];
 
+        function initInspectorGame() {
+            inspectorTimerValue = 30;
+            inspectorScoreValue = 0;
+            document.getElementById('inspector-timer').innerText = "30s";
+            document.getElementById('inspector-score').innerText = "0";
+            document.getElementById('inspector-feedback').classList.add('hidden');
+            document.getElementById('doc-stamp').classList.add('hidden');
+
+            loadNextInspectorDocument();
+
+            clearInterval(inspectorGameInterval);
+            inspectorGameInterval = setInterval(() => {
+                inspectorTimerValue--;
+                document.getElementById('inspector-timer').innerText = `${inspectorTimerValue}s`;
+                if (inspectorTimerValue <= 0) {
+                    clearInterval(inspectorGameInterval);
+                    playSound('error');
+                    
+                    // Final do jogo por tempo esgotado
+                    const finalScore = inspectorScoreValue;
+                    const bestScore = localStorage.getItem('score_inspector');
+                    if (!bestScore || finalScore > parseInt(bestScore)) {
+                        localStorage.setItem('score_inspector', finalScore);
+                    }
+                    alert(`Tempo esgotado! Seu score final na Inspeção de Documentos foi de ${finalScore} pontos.`);
+                    returnToGamesMenu();
+                }
+            }, 1000);
+        }
+
+        function loadNextInspectorDocument() {
+            document.getElementById('doc-stamp').classList.add('hidden');
+            document.getElementById('inspector-feedback').classList.add('hidden');
+
+            const randomIndex = Math.floor(Math.random() * docsPool.length);
+            currentDocument = docsPool[randomIndex];
+
+            document.getElementById('doc-type-badge').innerText = currentDocument.type;
+            document.getElementById('doc-text').innerText = currentDocument.text;
+        }
+
+        function handleInspectDecision(approved) {
+            const isCorrect = (approved === currentDocument.correct);
+            const stamp = document.getElementById('doc-stamp');
+            const feedback = document.getElementById('inspector-feedback');
+            const feedbackText = document.getElementById('inspector-feedback-txt');
+
+            stamp.classList.remove('hidden');
+            if (approved) {
+                stamp.innerText = "APROVADO";
+                stamp.className = "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-4 font-mono font-extrabold text-xl uppercase tracking-widest p-2 rounded rotate-12 z-20 border-emerald-600 text-emerald-600 bg-emerald-50/90";
+            } else {
+                stamp.innerText = "REJEITADO";
+                stamp.className = "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-4 font-mono font-extrabold text-xl uppercase tracking-widest p-2 rounded rotate-12 z-20 border-rose-600 text-rose-600 bg-rose-50/90";
+            }
+
+            feedback.classList.remove('hidden');
+            if (isCorrect) {
+                playSound('success');
+                inspectorScoreValue += 10;
+                feedback.className = "p-2.5 rounded border border-emerald-500 bg-emerald-50 text-emerald-900 font-mono text-[10px] mt-1";
+                feedbackText.innerHTML = `<strong>CORRETO! (+10 pts)</strong> - ${currentDocument.explanation}`;
+            } else {
+                playSound('error');
+                inspectorScoreValue = Math.max(0, inspectorScoreValue - 5);
+                feedback.className = "p-2.5 rounded border border-rose-500 bg-rose-50 text-rose-900 font-mono text-[10px] mt-1";
+                feedbackText.innerHTML = `<strong>ERRADO! (-5 pts)</strong> - ${currentDocument.explanation}`;
+            }
+
+            document.getElementById('inspector-score').innerText = inspectorScoreValue;
+
+            // Carrega próxima após breve intervalo
+            setTimeout(() => {
+                loadNextInspectorDocument();
+            }, 3000);
+        }
+
+        // 3. LÓGICA DO QUEM QUER SER UM FREUDINHO (Trivia Rápida com poderes)
+        let freudinhoStreak = 0;
+        let freudinhoCurrentQuestion = null;
+        let usedFreudinhoPower = false;
+        let usedLelePower = false;
+
+        const freudinhoQuestions = [
+            {
+                text: "Se um teste tem parecer desfavorável no SATEPSI, ele pode ser usado na clínica?",
+                options: ["Sim, desde que com cautela", "Não, sob pena de falta ética", "Apenas se o paciente concordar", "Sim, em atendimentos online"],
+                correct: 1,
+                clue: "A Resolução 31/2022 proíbe o uso profissional de instrumentos classificados como desfavoráveis."
+            },
+            {
+                text: "Qual é o principal objetivo da CCAP?",
+                options: ["Vender testes", "Dar parecer técnico sobre os testes", "Fiscalizar clínicas fisicamente", "Definir os honorários de psicólogos"],
+                correct: 1,
+                clue: "A CCAP avalia a qualidade técnico-científica dos testes submetidos ao SATEPSI."
+            },
+            {
+                text: "O prontuário decorrente de uma avaliação psicológica deve ser guardado por quanto tempo?",
+                options: ["2 anos", "5 anos", "10 anos", "15 anos"],
+                correct: 1,
+                clue: "O prazo mínimo obrigatório está estabelecido no Artigo 15 da Resolução 06/2019."
+            },
+            {
+                text: "É obrigatória a realização de entrevista devolutiva ao final da AP?",
+                options: ["Apenas se solicitada judicialmente", "Não, é apenas recomendada", "Sim, é um dever ético e legal", "Apenas para menores de idade"],
+                correct: 2,
+                clue: "É garantido o direito do solicitante de receber os resultados devolutivos do processo."
+            }
+        ];
+
+        function initFreudinhoGame() {
+            freudinhoStreak = 0;
+            usedFreudinhoPower = false;
+            usedLelePower = false;
+
+            document.getElementById('freudinho-streak').innerText = "🔥 0";
+            document.getElementById('freudinho-clue-box').classList.add('hidden');
+            
+            // Re-habilita botões de poder
+            document.getElementById('btn-power-freudinho').disabled = false;
+            document.getElementById('btn-power-lele').disabled = false;
+            document.getElementById('btn-power-freudinho').classList.remove('opacity-40', 'cursor-not-allowed');
+            document.getElementById('btn-power-lele').classList.remove('opacity-40', 'cursor-not-allowed');
+
+            loadNextFreudinhoQuestion();
+        }
+
+        function loadNextFreudinhoQuestion() {
+            document.getElementById('freudinho-clue-box').classList.add('hidden');
+            const randomIndex = Math.floor(Math.random() * freudinhoQuestions.length);
+            freudinhoCurrentQuestion = freudinhoQuestions[randomIndex];
+
+            document.getElementById('freudinho-question').innerText = freudinhoCurrentQuestion.text;
+
+            const altContainer = document.getElementById('freudinho-alternatives');
+            altContainer.innerHTML = '';
+
+            freudinhoCurrentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-2.5 border border-brand-dark rounded text-xs font-sans font-medium hover:bg-stone-50 transition-all flex items-center gap-3 bg-white dark:bg-brand-panelDark dark:border-brand-lightBorder dark:hover:bg-stone-800 text-stone-800 dark:text-stone-100";
+                btn.id = `freudinho-opt-${idx}`;
+                btn.onclick = () => selectFreudinhoOption(idx);
+                
+                const letter = String.fromCharCode(65 + idx);
+                btn.innerHTML = `<span class="font-mono font-extrabold bg-stone-100 text-stone-800 border border-brand-dark px-2 py-0.5 rounded dark:bg-stone-800 dark:text-stone-100">${letter}</span> <span>${opt}</span>`;
+                
+                altContainer.appendChild(btn);
+            });
+        }
+
+        function selectFreudinhoOption(idx) {
+            const isCorrect = (idx === freudinhoCurrentQuestion.correct);
+            if (isCorrect) {
+                playSound('success');
+                freudinhoStreak++;
+                document.getElementById('freudinho-streak').innerText = `🔥 ${freudinhoStreak}`;
+                
+                // Grava recorde se maior
+                const bestStreak = localStorage.getItem('score_freudinho');
+                if (!bestStreak || freudinhoStreak > parseInt(bestStreak)) {
+                    localStorage.setItem('score_freudinho', freudinhoStreak);
+                }
+
+                // Efeito verde rápido
+                document.getElementById(`freudinho-opt-${idx}`).className = "w-full text-left p-2.5 border-2 border-emerald-600 rounded text-xs font-semibold bg-emerald-100 text-emerald-900";
+                setTimeout(() => {
+                    loadNextFreudinhoQuestion();
+                }, 1000);
+            } else {
+                playSound('error');
+                alert(`Errado! Você perdeu sua sequência de acertos consecutivos. Streak final: ${freudinhoStreak}`);
+                returnToGamesMenu();
+            }
+        }
+
+        // AJUDAS ESPECIAIS (Uso Único)
+        function usePowerFreudinho() {
+            if (usedFreudinhoPower) return;
+            usedFreudinhoPower = true;
+            
+            // Desabilita botão visualmente
+            const btn = document.getElementById('btn-power-freudinho');
+            btn.disabled = true;
+            btn.classList.add('opacity-40', 'cursor-not-allowed');
+
+            playSound('success');
+
+            // Elimina 2 erradas
+            const correctIdx = freudinhoCurrentQuestion.correct;
+            let eliminatedCount = 0;
+            for (let i = 0; i < 4; i++) {
+                if (i !== correctIdx && eliminatedCount < 2) {
+                    const optBtn = document.getElementById(`freudinho-opt-${i}`);
+                    if (optBtn) {
+                        optBtn.classList.add('opacity-30', 'pointer-events-none', 'line-through');
+                        eliminatedCount++;
+                    }
+                }
+            }
+        }
+
+        function usePowerLele() {
+            if (usedLelePower) return;
+            usedLelePower = true;
+
+            const btn = document.getElementById('btn-power-lele');
+            btn.disabled = true;
+            btn.classList.add('opacity-40', 'cursor-not-allowed');
+
+            playSound('success');
+
+            // Mostra dica
+            document.getElementById('freudinho-clue-text').innerText = freudinhoCurrentQuestion.clue;
+            document.getElementById('freudinho-clue-box').classList.remove('hidden');
+        }
+
+        // Apresentação de Recordes Salvos
+        function displayHighScores() {
+            const rMatch = localStorage.getItem('score_match') || '--';
+            const rInspector = localStorage.getItem('score_inspector') || '--';
+            const rFreudinho = localStorage.getItem('score_freudinho') || '--';
+
+            document.getElementById('record-match-txt').innerText = `Recorde: ${rMatch !== '--' ? rMatch + 's' : '--'}`;
+            document.getElementById('record-inspector-txt').innerText = `Recorde: ${rInspector !== '--' ? rInspector + ' pts' : '--'}`;
+            document.getElementById('record-freudinho-txt').innerText = `Recorde: 🔥 ${rFreudinho}`;
+        }
+    </script>
+
+    <script>
         let quizType = 'obj'; // 'obj' para objetivas, 'diss' para dissertativas
         let currentQuestions = [...questionsList];
         let currentQuestionIndex = 0;
@@ -762,7 +1322,6 @@
         let masteredFlashcards = new Set();
         let answeredQuestions = new Set();
 
-        // Variáveis de controle de tempo do podcast
         let trackTimerInterval = null;
         let currentElapsedSeconds = 0;
 
@@ -773,26 +1332,33 @@
             updateStats();
             detectSystemTheme();
             selectPodcastTrack(0);
+            displayHighScores();
         };
 
         // Controle de Abas Inferiores
         function switchTab(tabId) {
-            const tabs = ['quiz', 'flashcards', 'podcast', 'tutor', 'summaries'];
+            const tabs = ['quiz', 'flashcards', 'podcast', 'tutor', 'games', 'summaries'];
             tabs.forEach(t => {
                 document.getElementById(`section-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark";
+                document.getElementById(`tab-${t}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-muted dark:text-brand-mutedDark";
             });
 
             document.getElementById(`section-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabId}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-accent";
+            document.getElementById(`tab-${tabId}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[8px] text-brand-accent";
             
-            // Pausar o podcast ao mudar de tela para manter a fluidez do iOS
+            // Pausar o podcast ao mudar de tela
             if (tabId !== 'podcast' && isPodcastPlaying) {
                 stopPodcast();
             }
+
+            // Exibir recordes se abrir aba de jogos
+            if (tabId === 'games') {
+                displayHighScores();
+                returnToGamesMenu();
+            }
         }
 
-        // Modo Noturno Dinâmico adaptado com tons quentes de fundo
+        // Modo Noturno Dinâmico
         function detectSystemTheme() {
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
@@ -814,10 +1380,10 @@
             const text = document.getElementById('theme-text');
             if (isDark) {
                 icon.innerText = '☀️';
-                text.innerText = 'Modo Claro';
+                text.innerText = 'Claro';
             } else {
                 icon.innerText = '🌙';
-                text.innerText = 'Modo Escuro';
+                text.innerText = 'Escuro';
             }
         }
 
@@ -882,7 +1448,6 @@
             optionsContainer.innerHTML = '';
             selectedOptionIndex = null;
             
-            // Reseta área de escrita dissertativa
             document.getElementById('dissertative-user-answer').value = '';
             document.getElementById('quiz-feedback').classList.add('hidden');
             document.getElementById('dissertative-analysis-box').classList.add('hidden');
@@ -942,6 +1507,9 @@
                 answeredQuestions.add(q.id);
                 if (isCorrect) {
                     correctAnswersCount++;
+                    playSound('success');
+                } else {
+                    playSound('error');
                 }
                 updateStats();
             }
@@ -986,7 +1554,6 @@
             const analysisBox = document.getElementById('dissertative-analysis-box');
             const keywordsMatchedList = document.getElementById('keywords-matched-list');
 
-            // Varredura de palavras-chave
             const normalizedText = userAnswer.toLowerCase();
             let matchesCount = 0;
             keywordsMatchedList.innerHTML = '';
@@ -1005,7 +1572,6 @@
                 keywordsMatchedList.appendChild(badge);
             });
 
-            // Determina pontuação
             const matchRatio = matchesCount / q.keywords.length;
             feedbackContainer.classList.remove('hidden');
             analysisBox.classList.remove('hidden');
@@ -1014,6 +1580,9 @@
                 answeredQuestions.add(q.id);
                 if (matchRatio >= 0.5) {
                     correctAnswersCount++;
+                    playSound('success');
+                } else {
+                    playSound('error');
                 }
                 updateStats();
             }
@@ -1058,12 +1627,11 @@
             document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`;
             document.getElementById('flashcard-question').innerText = card.question;
             document.getElementById('flashcard-answer').innerText = card.answer;
-            
-            // Remove flip state on load
             document.getElementById('flashcard-inner').classList.remove('card-flipped');
         }
 
         function flipCard() {
+            playSound('flip');
             document.getElementById('flashcard-inner').classList.toggle('card-flipped');
         }
 
@@ -1085,8 +1653,10 @@
             const currentCard = flashcardsList[currentFlashcardIndex];
             if (mastered) {
                 masteredFlashcards.add(currentCard.id);
+                playSound('success');
             } else {
                 masteredFlashcards.delete(currentCard.id);
+                playSound('error');
             }
             updateStats();
             nextFlashcard();
@@ -1124,13 +1694,74 @@
             }
         }
 
-        // Gerenciamento de Track do PodStudy
+        const podcastTracks = [
+            {
+                title: "Trilha 1: As 2 Fontes Fundamentais",
+                duration: 45,
+                script: [
+                    { host: "Lelé", text: "Freudinho, me ajuda aqui! Tem como eu fazer um processo de avaliação psicológica inteiro usando só duas fontes?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "Claro que sim, Lelé! A Resolução trinta e um diz que se você fizer entrevista e observação comportamental de qualidade, já tem duas fontes fundamentais válidas para fechar o processo.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Nossa, que alívio! Eu achava que a aplicação de testes aprovados pelo Satepsi era sempre obrigatória.", start: 28, end: 36 },
+                    { host: "Freudinho", text: "Não, eles são ótimas ferramentas complementares, mas o seu raciocínio clínico vale muito mais!", start: 36, end: 45 }
+                ]
+            },
+            {
+                title: "Trilha 2: O Limite da Declaração",
+                duration: 40,
+                script: [
+                    { host: "Lelé", text: "Professor, na questão sete da prova caiu sobre a Declaração. O que eu posso de fato escrever nela?", start: 0, end: 10 },
+                    { host: "Freudinho", text: "Anote aí: apenas fatos burocráticos! Comparecimento da pessoa, horários, dias de consulta e tempo de tratamento.", start: 10, end: 22 },
+                    { host: "Lelé", text: "E posso colocar que o paciente está com sintomas de ansiedade grave ou depressão?", start: 22, end: 30 },
+                    { host: "Freudinho", text: "Nunca! É terminantemente vedado colocar sintomas, diagnósticos ou estados psicológicos em uma Declaração. Lembre-se disso!", start: 30, end: 40 }
+                ]
+            },
+            {
+                title: "Trilha 3: Prazos do SATEPSI",
+                duration: 48,
+                script: [
+                    { host: "Lelé", text: "Socorro, Freudinho! São muitos prazos diferentes na Resolução trinta e um. Qual é o limite de validade de um teste?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "Calma, Lelé. Os estudos de fidedignidade, precisão e normatização nacional duram no máximo quinze anos. Passou disso, precisa atualizar.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Entendi! E se o teste for reprovado e a editora quiser recorrer?", start: 28, end: 36 },
+                    { host: "Freudinho", text: "Aí são trinta dias úteis após a plenária do Conselho Federal de Psicologia para enviar o recurso técnico.", start: 36, end: 48 }
+                ]
+            },
+            {
+                title: "Trilha 4: Psicodiagnóstico e Forças",
+                duration: 42,
+                script: [
+                    { host: "Lelé", text: "Professor Freudinho, psicodiagnóstico serve só para dar rótulo ou CID pras pessoas?", start: 0, end: 10 },
+                    { host: "Freudinho", text: "Excelente pergunta! Antigamente focavam muito na disfunção, mas hoje o processo também busca mapear as forças e fatores protetivos do paciente.", start: 10, end: 25 },
+                    { host: "Lelé", text: "Ah, que bom! Assim fica mais humanizado e ajuda de verdade na intervenção clínica posterior, né?", start: 25, end: 34 },
+                    { host: "Freudinho", text: "Perfeitamente. Ele identifica potencialidades para promover saúde mental.", start: 34, end: 42 }
+                ]
+            },
+            {
+                title: "Trilha 5: Devolutiva Obrigatória",
+                duration: 40,
+                script: [
+                    { host: "Lelé", text: "Acabei a avaliação! Posso só mandar o laudo por e-mail para o paciente e encerrar o caso?", start: 0, end: 11 },
+                    { host: "Freudinho", text: "De jeito nenhum! Realizar ao menos uma entrevista devolutiva é um dever ético obrigatório para entrega de laudos ou relatórios.", start: 11, end: 25 },
+                    { host: "Lelé", text: "E se a pessoa sumir ou se recusar a ir na sessão?", start: 25, end: 31 },
+                    { host: "Freudinho", text: "Aí você deve documentar e deixar registrado em prontuário os motivos da impossibilidade.", start: 31, end: 40 }
+                ]
+            },
+            {
+                title: "Trilha 6: Desafios das TDICs",
+                duration: 50,
+                script: [
+                    { host: "Lelé", text: "Adoro tecnologia! Mas quais os principais desafios com o uso de computadores e testes online hoje em dia?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "O grande desafio é avaliar empiricamente como essas tecnologias influenciam o vínculo e o rapport com o paciente durante a testagem.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Sim! Porque sem empatia e um bom vínculo, os resultados podem ficar bem distorcidos, né?", start: 28, end: 38 },
+                    { host: "Freudinho", text: "Exato! O Satepsi tem exigido rigor nesses estudos de equivalência para garantir aplicações remotas seguras e éticas.", start: 38, end: 50 }
+                ]
+            }
+        ];
+
         function selectPodcastTrack(index) {
             stopPodcast();
             currentTrackIndex = index;
             const track = podcastTracks[index];
             
-            // Alterar visual dos botões de track
             for (let i = 0; i < 6; i++) {
                 const btn = document.getElementById(`btn-track-${i}`);
                 if (btn) {
@@ -1143,18 +1774,14 @@
             }
 
             document.getElementById('pod-title').innerText = track.title.toUpperCase();
-            
-            // Gerar Visual de Conversa estilo WhatsApp no Container
             renderChatHistory(track);
             
-            // Configurar Slider de Progresso
             currentElapsedSeconds = 0;
             document.getElementById('pod-progress-slider').value = 0;
             document.getElementById('pod-time-current').innerText = "00:00";
             document.getElementById('pod-time-total').innerText = formatTime(track.duration);
         }
 
-        // Renderiza os balões de conversa no estilo WhatsApp
         function renderChatHistory(track) {
             const chatContainer = document.getElementById('podcast-chat-container');
             chatContainer.innerHTML = '';
@@ -1165,27 +1792,22 @@
                 wrapper.className = `flex w-full items-start gap-2 ${isLelé ? 'justify-end' : 'justify-start'}`;
                 wrapper.id = `chat-turn-wrapper-${idx}`;
 
-                // Avatar
                 const avatar = document.createElement('div');
                 avatar.className = `w-7 h-7 rounded-full flex items-center justify-center text-sm border border-brand-dark shrink-0 ${isLelé ? 'bg-brand-pink text-brand-dark order-last' : 'bg-brand-dark text-white'}`;
                 avatar.innerText = isLelé ? "🌸" : "🎓";
 
-                // Balão de Mensagem
                 const bubble = document.createElement('div');
                 bubble.id = `chat-bubble-${idx}`;
-                // Estilo baseado em quem fala
                 if (isLelé) {
                     bubble.className = "max-w-[75%] p-2.5 rounded-lg border border-brand-dark text-xs leading-relaxed bg-brand-pink/30 text-stone-900 shadow-sm transition-all duration-300";
                 } else {
                     bubble.className = "max-w-[75%] p-2.5 rounded-lg border border-brand-dark text-xs leading-relaxed bg-brand-panel dark:bg-brand-panelDark text-stone-800 dark:text-stone-100 shadow-sm transition-all duration-300";
                 }
 
-                // Header do balão
                 const hostName = document.createElement('span');
                 hostName.className = "font-mono font-bold text-[10px] block mb-0.5 text-brand-accent";
                 hostName.innerText = turn.host;
 
-                // Texto do balão
                 const messageText = document.createElement('p');
                 messageText.innerText = turn.text;
 
@@ -1214,15 +1836,9 @@
         function startPodcast() {
             isPodcastPlaying = true;
             document.getElementById('btn-play-podcast').innerText = '⏸️ Pausar Podcast';
-            
-            // Ativa ondas sonoras
             document.getElementById('pod-avatar').className = "w-12 h-12 bg-brand-pink rounded-full flex items-center justify-center text-white text-xl animate-bounce";
             animateWaves(true);
-
-            // Iniciar Contador de Tempo
             startTrackTimer();
-
-            // Executar fala ativa
             speakPodcastTurn();
         }
 
@@ -1247,8 +1863,6 @@
             clearInterval(trackTimerInterval);
             document.getElementById('pod-progress-slider').value = 0;
             document.getElementById('pod-time-current').innerText = "00:00";
-
-            // Resetar destaques dos balões de conversa
             resetChatHighlights();
 
             if (synth) synth.cancel();
@@ -1276,12 +1890,9 @@
                         stopPodcast();
                     }
                     
-                    // Atualiza UI
                     document.getElementById('pod-time-current').innerText = formatTime(currentElapsedSeconds);
                     const percent = (currentElapsedSeconds / track.duration) * 100;
                     document.getElementById('pod-progress-slider').value = percent;
-
-                    // Sincronizar fala caso a minutagem passe do limite do turno atual
                     checkTurnSinc(currentElapsedSeconds);
                 }
             }, 1000);
@@ -1292,7 +1903,6 @@
             currentElapsedSeconds = Math.round((value / 100) * track.duration);
             document.getElementById('pod-time-current').innerText = formatTime(currentElapsedSeconds);
 
-            // Verifica qual turno do diálogo corresponde a essa minutagem
             let newTurnIndex = 0;
             for (let i = 0; i < track.script.length; i++) {
                 if (currentElapsedSeconds >= track.script[i].start && currentElapsedSeconds < track.script[i].end) {
@@ -1316,7 +1926,6 @@
             const track = podcastTracks[currentTrackIndex];
             const currentTurn = track.script[currentPodcastTurnIndex];
             if (currentTurn && (elapsed < currentTurn.start || elapsed >= currentTurn.end)) {
-                // Descobre o turno correto baseado no tempo
                 for (let i = 0; i < track.script.length; i++) {
                     if (elapsed >= track.script[i].start && elapsed < track.script[i].end) {
                         currentPodcastTurnIndex = i;
@@ -1328,7 +1937,6 @@
             }
         }
 
-        // Destaca o balão de conversa ativo estilo WhatsApp
         function highlightActiveBubble(index) {
             resetChatHighlights();
             const bubble = document.getElementById(`chat-bubble-${index}`);
@@ -1358,17 +1966,14 @@
             currentUtterance = new SpeechSynthesisUtterance(turn.text);
             currentUtterance.lang = 'pt-BR';
             
-            // Buscar vozes nativas de qualidade do sistema
             let voices = synth.getVoices();
             
             if (turn.host === "Lelé") {
-                // Voz mais rápida, entusiasmada e jovem (pitch ligeiramente mais alto)
                 let femaleVoice = voices.find(v => v.lang.includes('pt-BR') && (v.name.includes('Luciana') || v.name.includes('Helena') || v.name.includes('Maria')));
                 if (femaleVoice) currentUtterance.voice = femaleVoice;
                 currentUtterance.pitch = 1.15; 
-                currentUtterance.rate = 1.05; // Conversa ligeiramente mais rápida
+                currentUtterance.rate = 1.05;
             } else {
-                // Professor Freudinho: tom mais calmo, conselheiro, encorpado (pitch mais baixo)
                 let maleVoice = voices.find(v => v.lang.includes('pt-BR') && (v.name.includes('Daniel') || v.name.includes('Felipe') || v.name.includes('Google pt-BR')));
                 if (!maleVoice) maleVoice = voices.find(v => v.lang.includes('pt-BR') && v.name.includes('Google'));
                 if (maleVoice) currentUtterance.voice = maleVoice;
@@ -1447,32 +2052,32 @@
             
             if (lower.includes('laudo') || lower.includes('relatório') || lower.includes('diferença')) {
                 return `<strong>Laudo vs. Relatório (Res. 06/2019):</strong><br>
-                        • <strong>Laudo:</strong> É o documento resultante de uma <em>Avaliação Psicológica</em> estruturada. Ele apresenta conclusões, diagnósticos, prognósticos e requer testes científicos.[cite: 4]<br>
-                        • <strong>Relatório:</strong> Tem caráter meramente informativo e descritivo. Ele relata o acompanhamento ou intervenção já em andamento, sem finalidade diagnóstica.[cite: 4]`;
+                        • <strong>Laudo:</strong> É o documento resultante de uma <em>Avaliação Psicológica</em> estruturada. Ele apresenta conclusões, diagnósticos, prognósticos e requer testes científicos.<br>
+                        • <strong>Relatório:</strong> Tem caráter meramente informativo e descritivo. Ele relata o acompanhamento ou intervenção já em andamento, sem finalidade diagnóstica.`;
             }
             
             if (lower.includes('declaração') || lower.includes('declaracao')) {
                 return `<strong>Declaração (Res. 06/2019):</strong><br>
                         Serve exclusivamente para justificar comparecimento do paciente ou acompanhante, dias e horários de tratamento. 
-                        <br>⚠️ <strong>Atenção:</strong> É proibido colocar sintomas, diagnósticos ou CIDs na Declaração.[cite: 4]`;
+                        <br>⚠️ <strong>Atenção:</strong> É proibido colocar sintomas, diagnósticos ou CIDs na Declaração.`;
             }
 
             if (lower.includes('satepsi') || lower.includes('teste')) {
                 return `<strong>SATEPSI (Res. 31/2022):</strong><br>
-                        Sistema técnico do Conselho Federal de Psicologia que avalia a fundamentação e a consistência técnico-científica de testes. Os testes precisam possuir fidedignidade e normatização válidas para a população do Brasil.[cite: 3]`;
+                        Sistema técnico do Conselho Federal de Psicologia que avalia a fundamentação e a consistência técnico-científica de testes. Os testes precisam possuir fidedignidade e normatização válidas para a população do Brasil.`;
             }
 
             if (lower.includes('prazos') || lower.includes('validade') || lower.includes('guarda')) {
                 return `<strong>Prazos Críticos para a Prova:</strong><br>
-                        • <strong>Guarda de arquivos:</strong> Mínimo de 5 anos.[cite: 4]<br>
-                        • <strong>Estudos de normatização e fidedignidade de testes:</strong> Validade máxima de 15 anos.[cite: 3]<br>
-                        • <strong>Recurso de parecer desfavorável:</strong> Prazo de 30 dias úteis para o psicólogo solicitar revisão.[cite: 3]`;
+                        • <strong>Guarda de arquivos:</strong> Mínimo de 5 anos.<br>
+                        • <strong>Estudos de normatização e fidedignidade de testes:</strong> Validade máxima de 15 anos.<br>
+                        • <strong>Recurso de parecer desfavorável:</strong> Prazo de 30 dias úteis para o psicólogo solicitar revisão.`;
             }
 
             return `Dúvida compreendida! Foco especial nos seguintes conceitos para a prova de Avaliação Psicológica:<br>
-                    • Resolução CFP 06/2019 (documentação)[cite: 4]<br>
-                    • Resolução CFP 31/2022 (SATEPSI).[cite: 3]<br>
-                    Tente me perguntar por termos específicos: 'Laudo', 'Declaração', 'Atestado' ou 'CCAP'![cite: 1, 3, 4]`;
+                    • Resolução CFP 06/2019 (documentação)<br>
+                    • Resolução CFP 31/2022 (SATEPSI).<br>
+                    Tente me perguntar por termos específicos: 'Laudo', 'Declaração', 'Atestado' ou 'CCAP'!`;
         }
     </script>
 </body>
