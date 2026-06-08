@@ -1,1 +1,1479 @@
-Hi
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Psicodidática - Portal de Avaliação Psicológica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            // Paleta de cores inspirada na imagem aconchegante (image_8ae904.jpg)
+                            bg: '#FAF4F2',         // Creme pêssego muito claro e quente
+                            bgDark: '#1E1415',     // Berinjela escuro profundo quase chocolate
+                            panel: '#FFFDFC',      // Branco porcelana quente
+                            panelDark: '#2D1F21',  // Marrom-rosado escuro para o painel noturno
+                            pink: '#E3B1AF',       // Rosa chá/veludo aconchegante da imagem
+                            accent: '#D97D77',     // Terracota suave/Rose Gold vibrante
+                            accentHover: '#C66761',
+                            dark: '#4A3533',       // Bordas e textos em marrom chocolate aconchegante
+                            lightBorder: '#ECD5D3',// Borda rosada para o modo escuro
+                            muted: '#9E8582',      // Muted rose-gray
+                            mutedDark: '#BFABAB',
+                            gold: '#D4AF37'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['Space Grotesk', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Borda estilo neubrutalismo aconchegante */
+        .retro-border {
+            border: 2px solid #4A3533;
+        }
+        .dark .retro-border {
+            border: 2px solid #ECD5D3;
+        }
+        
+        /* Sombras neubrutalistas adaptadas à paleta quente */
+        .retro-shadow {
+            box-shadow: 4px 4px 0px 0px #4A3533;
+        }
+        .dark .retro-shadow {
+            box-shadow: 4px 4px 0px 0px #ECD5D3;
+        }
+        
+        .retro-shadow-sm {
+            box-shadow: 2px 2px 0px 0px #4A3533;
+        }
+        .dark .retro-shadow-sm {
+            box-shadow: 2px 2px 0px 0px #ECD5D3;
+        }
+
+        /* Efeito 3D flip do Flashcard */
+        .card-perspective {
+            perspective: 1000px;
+        }
+        .card-inner {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .card-flipped {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        
+        /* Suporte ao Safe Area do iOS */
+        .safe-bottom {
+            padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+        }
+
+        /* Custom Track Slider Minimalista */
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #D97D77;
+            border: 1.5px solid #4A3533;
+            cursor: pointer;
+        }
+        .dark input[type="range"]::-webkit-slider-thumb {
+            border: 1.5px solid #ECD5D3;
+            background: #E3B1AF;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-dark transition-colors duration-300 min-h-screen flex flex-col selection:bg-brand-pink selection:text-brand-dark dark:bg-brand-bgDark dark:text-gray-100">
+
+    <header class="w-full bg-brand-panel border-b-2 border-brand-dark px-4 py-3 flex justify-between items-center z-30 sticky top-0 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+        <div class="flex flex-col">
+            <h1 class="text-lg font-extrabold font-mono tracking-tighter text-brand-dark dark:text-gray-100 flex items-center gap-1.5">
+                🌸 PSICODIDÁTICA
+            </h1>
+            <span class="text-[9px] font-sans tracking-widest font-bold text-brand-muted dark:text-brand-mutedDark">
+                AVALIAÇÃO PSICOLÓGICA STUDY HUB
+            </span>
+        </div>
+        
+        <!-- Toggle de Tema Escuro / Claro -->
+        <button onclick="toggleDarkMode()" class="retro-border retro-shadow-sm bg-brand-bg hover:bg-stone-100 px-3 py-1.5 rounded-full text-xs font-mono font-bold flex items-center gap-1.5 transition-all active:translate-y-0.5 dark:bg-brand-bgDark dark:border-brand-lightBorder dark:hover:bg-stone-900">
+            <span id="theme-icon">🌙</span>
+            <span id="theme-text">Modo Escuro</span>
+        </button>
+    </header>
+
+    <main class="flex-grow w-full max-w-[500px] mx-auto p-4 flex flex-col gap-4 pb-32 overflow-y-auto">
+        
+        <!-- SEÇÃO: MEU RENDIMENTO (Box Score no topo adaptado) -->
+        <section class="bg-brand-panel retro-border p-4 rounded-lg retro-shadow dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex justify-between items-center border-b border-brand-dark pb-2 mb-3 dark:border-brand-lightBorder">
+                <h2 class="font-mono text-[10px] uppercase tracking-wider text-brand-muted font-bold dark:text-brand-mutedDark">DESEMPENHO DO ESTUDO</h2>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="flex flex-col items-center">
+                    <span id="stat-accuracy" class="text-xl font-mono font-extrabold text-brand-accent">0%</span>
+                    <span class="text-[9px] uppercase font-mono text-brand-muted dark:text-brand-mutedDark">Acertos</span>
+                </div>
+                <div class="flex flex-col items-center border-x border-stone-200 dark:border-stone-700">
+                    <span id="stat-answered" class="text-xl font-mono font-extrabold">0/10</span>
+                    <span class="text-[9px] uppercase font-mono text-brand-muted dark:text-brand-mutedDark">Respondidas</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <span id="stat-mastered" class="text-xl font-mono font-extrabold text-brand-accent">0/8</span>
+                    <span class="text-[9px] uppercase font-mono text-brand-muted dark:text-brand-mutedDark">Cards OK</span>
+                </div>
+            </div>
+            
+            <div class="w-full bg-stone-100 rounded-full h-2 border border-brand-dark overflow-hidden mt-3 dark:bg-stone-800 dark:border-brand-lightBorder">
+                <div id="stat-progress-bar" class="bg-brand-accent h-full w-[0%] transition-all"></div>
+            </div>
+        </section>
+
+        <!-- ABA 1: SIMULADO (QUIZ) -->
+        <div id="section-quiz" class="bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex flex-col gap-2 border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Fixação Metodológica</span>
+                        <h2 class="text-lg font-serif font-bold">Simulado Ativo</h2>
+                    </div>
+                    <span id="quiz-progress-text" class="font-mono text-xs font-bold bg-brand-bg px-2 py-1 rounded border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">1 / 10</span>
+                </div>
+
+                <!-- Seletor de Tipo de Questão (Objetivas / Dissertativas) -->
+                <div class="flex gap-1 mt-1 bg-brand-bg p-1 rounded-md border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">
+                    <button onclick="setQuizType('obj')" id="btn-type-obj" class="flex-1 py-1 text-center font-mono text-[10px] font-bold rounded bg-brand-panel text-brand-dark border border-brand-dark dark:bg-brand-panelDark dark:text-gray-100">
+                        Múltipla Escolha 📝
+                    </button>
+                    <button onclick="setQuizType('diss')" id="btn-type-diss" class="flex-1 py-1 text-center font-mono text-[10px] font-bold rounded text-brand-muted dark:text-brand-mutedDark">
+                        Dissertativas ✍️
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros Rápidos de Matéria (Apenas para Objetivas) -->
+            <div id="quiz-filters-container" class="flex gap-1.5 overflow-x-auto pb-1">
+                <button onclick="filterQuestions('all')" id="btn-filt-all" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-dark text-white dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark whitespace-nowrap">Todos</button>
+                <button onclick="filterQuestions('docs')" id="btn-filt-docs" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-panel text-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200 whitespace-nowrap">Res. 06/2019 (Doc)</button>
+                <button onclick="filterQuestions('satepsi')" id="btn-filt-satepsi" class="text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-panel text-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200 whitespace-nowrap">Res. 31/2022 (Satepsi)</button>
+            </div>
+
+            <!-- Pergunta e Área de Resolução -->
+            <div class="flex flex-col gap-3">
+                <div id="quiz-question-container" class="bg-brand-bg p-3.5 rounded-lg border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">
+                    <span id="question-source" class="text-[9px] font-mono bg-brand-accent text-white px-1.5 py-0.5 rounded font-bold">FONTE</span>
+                    <p id="question-text" class="font-sans font-semibold text-xs md:text-sm leading-relaxed mt-2 text-stone-800 dark:text-stone-200">Carregando a questão...</p>
+                </div>
+
+                <!-- Painel de Opções Objetivas -->
+                <div id="quiz-options-container" class="flex flex-col gap-2">
+                    <!-- Gerado Dinamicamente -->
+                </div>
+
+                <!-- Painel de Resposta Dissertativa -->
+                <div id="quiz-dissertative-container" class="hidden flex flex-col gap-2">
+                    <label for="dissertative-user-answer" class="text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">SUA RESPOSTA COMPLETA:</label>
+                    <textarea id="dissertative-user-answer" rows="4" placeholder="Escreva sua explicação aqui, use os termos das resoluções para uma avaliação precisa..." class="w-full p-3 text-xs border-2 border-brand-dark rounded-lg focus:outline-none focus:border-brand-accent bg-white dark:bg-brand-panelDark dark:border-brand-lightBorder text-stone-800 dark:text-stone-200 resize-none"></textarea>
+                    <p class="text-[9px] text-brand-muted dark:text-brand-mutedDark italic">O corretor automático irá checar a presença dos conceitos-chave exigidos para a prova.</p>
+                </div>
+            </div>
+
+            <!-- Controles do Simulado -->
+            <div class="flex justify-between items-center pt-3 border-t border-brand-dark dark:border-brand-lightBorder gap-2">
+                <button onclick="prevQuestion()" class="flex-1 text-center font-mono font-bold text-xs bg-brand-panel text-brand-dark border-2 border-brand-dark py-2.5 rounded active:bg-stone-50 dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200 dark:active:bg-stone-800">
+                    ← Voltar
+                </button>
+                <button id="btn-submit-answer" onclick="evaluateCurrentQuestion()" class="flex-grow text-center font-mono font-extrabold text-xs bg-brand-accent text-white border-2 border-brand-dark py-2.5 rounded active:translate-y-[1px] dark:border-brand-lightBorder">
+                    Confirmar Resposta
+                </button>
+                <button onclick="nextQuestion()" class="flex-1 text-center font-mono font-bold text-xs bg-brand-panel text-brand-dark border-2 border-brand-dark py-2.5 rounded active:bg-stone-50 dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200 dark:active:bg-stone-800">
+                    Avançar →
+                </button>
+            </div>
+
+            <!-- Feedback Expandido -->
+            <div id="quiz-feedback" class="hidden bg-stone-50 dark:bg-stone-900 border-2 border-brand-dark dark:border-brand-lightBorder p-3 rounded-lg flex flex-col gap-2">
+                <div class="flex items-center gap-1.5">
+                    <span id="feedback-status-icon" class="text-xl"></span>
+                    <h4 id="feedback-status-title" class="font-mono font-extrabold text-xs uppercase"></h4>
+                </div>
+                <p id="feedback-explanation" class="text-[11px] text-stone-700 dark:text-stone-300 leading-relaxed"></p>
+                
+                <!-- Exclusivo Dissertativa: Palavras-chave Encontradas -->
+                <div id="dissertative-analysis-box" class="hidden border-t border-dashed border-stone-300 dark:border-stone-700 pt-2 mt-1">
+                    <span class="text-[10px] font-mono font-bold text-brand-dark dark:text-gray-200">Análise de Conceitos Utilizados:</span>
+                    <div id="keywords-matched-list" class="flex flex-wrap gap-1 mt-1.5">
+                        <!-- Badges dinâmicos -->
+                    </div>
+                </div>
+
+                <div class="bg-brand-bg dark:bg-brand-bgDark p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-[10px] font-mono flex flex-col gap-0.5">
+                    <span class="font-bold text-brand-accent">Sustentação Científica e Legal:</span>
+                    <span id="feedback-legal-ref" class="text-stone-700 dark:text-stone-300"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 2: FLASHCARDS -->
+        <div id="section-flashcards" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                <div>
+                    <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Memorização Ativa</span>
+                    <h2 class="text-lg font-serif font-bold">Repetição Espaçada</h2>
+                </div>
+                <span id="flashcard-counter" class="font-mono text-xs font-bold bg-brand-bg px-2 py-1 rounded border border-brand-dark dark:bg-brand-bgDark dark:border-brand-lightBorder">0 / 0</span>
+            </div>
+
+            <!-- Flashcard Interativo -->
+            <div class="card-perspective w-full h-[220px] cursor-pointer" onclick="flipCard()">
+                <div id="flashcard-inner" class="card-inner w-full h-full relative border-2 border-brand-dark rounded-lg retro-shadow-sm bg-brand-bg dark:bg-brand-bgDark dark:border-brand-lightBorder">
+                    <!-- Frente -->
+                    <div class="card-front absolute w-full h-full p-4 flex flex-col justify-between items-center text-center">
+                        <span class="text-[9px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark uppercase tracking-wider">PERGUNTA CHAVE</span>
+                        <p id="flashcard-question" class="text-sm font-serif font-bold text-brand-dark my-auto px-2 dark:text-gray-100">Carregando pergunta...</p>
+                        <span class="text-[9px] font-mono text-brand-accent font-bold">Toque para revelar a resposta 🔄</span>
+                    </div>
+                    <!-- Verso -->
+                    <div class="card-back absolute w-full h-full p-4 flex flex-col justify-between items-center text-center bg-stone-900 text-white rounded-lg">
+                        <span class="text-[9px] font-mono font-bold text-brand-pink uppercase tracking-wider">RESPOSTA & FUNDAMENTAÇÃO</span>
+                        <p id="flashcard-answer" class="text-xs font-sans font-medium text-stone-200 my-auto overflow-y-auto max-h-[110px] px-2 leading-relaxed">Carregando resposta...</p>
+                        <span class="text-[9px] font-mono text-stone-400 font-bold">Toque para desvirar 🔄</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controles do Flashcard -->
+            <div class="flex flex-col gap-2 pt-2 border-t border-brand-dark dark:border-brand-lightBorder">
+                <div class="flex justify-between gap-2">
+                    <button onclick="prevFlashcard()" class="flex-1 font-mono font-bold text-xs bg-brand-panel hover:bg-stone-50 border-2 border-brand-dark py-2.5 rounded text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        ← Anterior
+                    </button>
+                    <button onclick="nextFlashcard()" class="flex-1 font-mono font-bold text-xs bg-brand-panel hover:bg-stone-50 border-2 border-brand-dark py-2.5 rounded text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        Próximo →
+                    </button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="markFlashcardMastered(false)" class="flex-1 font-mono font-bold text-xs bg-white text-brand-accent border-2 border-brand-dark py-2 rounded dark:bg-brand-panelDark dark:border-brand-lightBorder">
+                        Ainda treinando ❌
+                    </button>
+                    <button onclick="markFlashcardMastered(true)" class="flex-1 font-mono font-bold text-xs bg-stone-900 text-white border-2 border-brand-dark py-2 rounded dark:bg-brand-lightBorder dark:text-brand-dark">
+                        Dominei! ✅
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: PODSTUDY (REESTRUTURADO) -->
+        <div id="section-podcast" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                <div>
+                    <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Diálogos de Fixação Curta</span>
+                    <h2 class="text-lg font-serif font-bold">PodStudy: Freudinho & Lelé</h2>
+                </div>
+                <span class="text-[9px] bg-brand-accent text-white font-mono font-bold px-1.5 py-0.5 rounded">6 TRILHAS</span>
+            </div>
+
+            <!-- Seleção de Track / Capítulo (Máximo de 1 minuto por faixa) -->
+            <div class="flex flex-col gap-2">
+                <span class="text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">Escolha uma faixa temática:</span>
+                <div class="grid grid-cols-1 gap-1.5 max-h-[160px] overflow-y-auto pr-1">
+                    <button onclick="selectPodcastTrack(0)" id="btn-track-0" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-bg text-brand-dark dark:border-brand-lightBorder">
+                        <span>🎙️ 1. As 2 Fontes Fundamentais</span>
+                        <span class="text-[9px] font-mono opacity-80">~45s</span>
+                    </button>
+                    <button onclick="selectPodcastTrack(1)" id="btn-track-1" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        <span>🎙️ 2. O Limite da Declaração</span>
+                        <span class="text-[9px] font-mono opacity-80">~40s</span>
+                    </button>
+                    <button onclick="selectPodcastTrack(2)" id="btn-track-2" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        <span>🎙️ 3. Prazos do SATEPSI</span>
+                        <span class="text-[9px] font-mono opacity-80">~50s</span>
+                    </button>
+                    <button onclick="selectPodcastTrack(3)" id="btn-track-3" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        <span>🎙️ 4. Psicodiagnóstico e Forças</span>
+                        <span class="text-[9px] font-mono opacity-80">~45s</span>
+                    </button>
+                    <button onclick="selectPodcastTrack(4)" id="btn-track-4" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        <span>🎙️ 5. Devolutiva Obrigatória</span>
+                        <span class="text-[9px] font-mono opacity-80">~40s</span>
+                    </button>
+                    <button onclick="selectPodcastTrack(5)" id="btn-track-5" class="w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200">
+                        <span>🎙️ 6. Desafios das TDICs</span>
+                        <span class="text-[9px] font-mono opacity-80">~50s</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Player do Podcast -->
+            <div class="bg-brand-bg dark:bg-brand-bgDark rounded-lg border-2 border-brand-dark dark:border-brand-lightBorder p-4 flex flex-col items-center text-center gap-3">
+                <div class="w-12 h-12 bg-brand-dark dark:bg-brand-lightBorder rounded-full flex items-center justify-center text-white dark:text-brand-dark text-xl" id="pod-avatar">
+                    🎓
+                </div>
+                
+                <div class="w-full">
+                    <h4 id="pod-title" class="font-mono font-extrabold text-xs text-brand-accent uppercase">FAIXA 1: AS 2 FONTES FUNDAMENTAIS</h4>
+                    <p class="text-[9px] text-brand-muted dark:text-brand-mutedDark mt-0.5">Professor Freudinho & Aluna Lelé</p>
+                </div>
+
+                <!-- Slider de Progresso e Minutagem -->
+                <div class="w-full flex flex-col gap-1.5 mt-2">
+                    <input type="range" id="pod-progress-slider" min="0" max="100" value="0" oninput="onSliderDrag(this.value)" class="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-lg appearance-none cursor-pointer accent-brand-accent">
+                    <div class="flex justify-between text-[10px] font-mono font-bold text-brand-muted dark:text-brand-mutedDark">
+                        <span id="pod-time-current">00:00</span>
+                        <span id="pod-time-total">00:45</span>
+                    </div>
+                </div>
+
+                <!-- Ondas de Áudio Animadas -->
+                <div class="flex items-center gap-1 h-6 justify-center w-full my-1" id="sound-waves">
+                    <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-2 transition-all duration-300" id="wave-1"></div>
+                    <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-3 transition-all duration-300" id="wave-2"></div>
+                    <div class="w-1 bg-brand-accent rounded h-5 transition-all duration-300" id="wave-3"></div>
+                    <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-2 transition-all duration-300" id="wave-4"></div>
+                    <div class="w-1 bg-brand-accent rounded h-4 transition-all duration-300" id="wave-5"></div>
+                    <div class="w-1 bg-brand-dark dark:bg-brand-lightBorder rounded h-3 transition-all duration-300" id="wave-6"></div>
+                </div>
+
+                <!-- Transcrição Ativa com Visual estilo WhatsApp -->
+                <div id="podcast-chat-container" class="bg-stone-100 dark:bg-stone-900/60 p-3 rounded-lg border border-brand-dark dark:border-brand-lightBorder w-full h-[220px] overflow-y-auto flex flex-col gap-3 text-left">
+                    <!-- Balões gerados dinamicamente -->
+                </div>
+
+                <!-- Controles do Áudio Unificados -->
+                <div class="flex gap-2 w-full">
+                    <button id="btn-play-podcast" onclick="togglePodcast()" class="flex-grow bg-brand-accent text-white border-2 border-brand-dark dark:border-brand-lightBorder py-2 rounded font-mono font-bold text-xs retro-shadow-sm active:translate-y-0.5">
+                        ▶️ Iniciar Podcast
+                    </button>
+                    <button onclick="stopPodcast()" class="w-1/4 bg-brand-panel border-2 border-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder py-2 rounded font-mono font-bold text-xs text-brand-dark dark:text-gray-200 active:translate-y-0.5">
+                        ⏹️ Parar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: TUTOR INTELIGENTE -->
+        <div id="section-tutor" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-3 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                <div>
+                    <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Baseado nas Diretrizes</span>
+                    <h2 class="text-lg font-serif font-bold">Assistente Psicodidática</h2>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div id="tutor-chat-box" class="h-[220px] border-2 border-brand-dark dark:border-brand-lightBorder rounded-lg p-3 bg-stone-50 dark:bg-stone-900 overflow-y-auto flex flex-col gap-2">
+                <div class="self-start max-w-[90%] bg-brand-panel dark:bg-brand-panelDark p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-xs leading-relaxed">
+                    <span class="font-bold text-brand-accent block mb-0.5 font-mono">🤖 Assistente:</span>
+                    Olá! Estou abastecido com todo o conteúdo das Resoluções CFP 06/2019 e 31/2022, o manual do SATEPSI e as dúvidas de psicodiagnóstico[cite: 1, 3, 4].
+                    <br><br>
+                    Pergunte-me qualquer conceito para sua prova! Exemplos:
+                    <ul class="list-disc pl-4 mt-1 font-semibold flex flex-col gap-0.5">
+                        <li>"Laudo vs Relatório"[cite: 4]</li>
+                        <li>"Vigência de estudos de um teste no Satepsi"[cite: 3]</li>
+                        <li>"O que pode ir na Declaração?"[cite: 4]</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Entrada de Mensagem com ajuste flexível de teclado -->
+            <div class="flex gap-1.5">
+                <input type="text" id="tutor-user-input" placeholder="Pergunte sobre as resoluções..." onkeydown="if(event.key === 'Enter') sendTutorMessage()" class="flex-grow p-2.5 border-2 border-brand-dark dark:border-brand-lightBorder rounded bg-white dark:bg-brand-panelDark text-xs focus:outline-none focus:border-brand-accent">
+                <button onclick="sendTutorMessage()" class="font-mono font-bold text-xs bg-brand-dark text-white border-2 border-brand-dark dark:border-brand-lightBorder px-4 rounded hover:bg-stone-800">Enviar</button>
+            </div>
+        </div>
+
+        <!-- ABA 5: RESUMOS DAS RESOLUÇÕES -->
+        <div id="section-summaries" class="hidden bg-brand-panel retro-border p-4 rounded-lg retro-shadow flex flex-col gap-4 dark:bg-brand-panelDark dark:border-brand-lightBorder">
+            <div class="flex justify-between items-center border-b border-brand-dark pb-2 dark:border-brand-lightBorder">
+                <div>
+                    <span class="text-[10px] font-mono uppercase text-brand-muted dark:text-brand-mutedDark">Leis & Diretrizes</span>
+                    <h2 class="text-lg font-serif font-bold">Resumos de Bolso</h2>
+                </div>
+            </div>
+
+            <!-- Tabs Internas de Resumo -->
+            <div class="flex border-b border-brand-dark dark:border-brand-lightBorder gap-1">
+                <button onclick="showSummarySection('summary-docs')" id="btn-sum-docs" class="flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-dark text-white rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark">Res. 06/2019 (Doc)</button>
+                <button onclick="showSummarySection('summary-satepsi')" id="btn-sum-satepsi" class="flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-panel text-brand-dark rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200">Res. 31/2022 (Satepsi)</button>
+            </div>
+
+            <!-- Conteúdo Dinâmico -->
+            <div id="summary-content" class="text-xs text-stone-800 dark:text-stone-200 leading-relaxed max-h-[220px] overflow-y-auto">
+                <!-- Inserido dinamicamente -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER VINTAGE SIMPLIFICADO -->
+    <footer class="w-full bg-brand-panel dark:bg-brand-panelDark border-t-2 border-brand-dark dark:border-brand-lightBorder p-3 text-center text-[9px] font-mono text-brand-muted dark:text-brand-mutedDark">
+        Psicodidática • Versão Mobile 1.2 • 2026
+    </footer>
+
+    <!-- NAVEGAÇÃO INFERIOR ESTILO IOS -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-brand-panel dark:bg-brand-panelDark border-t-2 border-brand-dark dark:border-brand-lightBorder px-2 py-1 flex justify-around items-center z-40 safe-bottom">
+        <button onclick="switchTab('quiz')" id="tab-quiz" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-accent">
+            <span class="text-base">📝</span>
+            <span>Simulado</span>
+        </button>
+        <button onclick="switchTab('flashcards')" id="tab-flashcards" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-base">🗂️</span>
+            <span>Cards</span>
+        </button>
+        <button onclick="switchTab('podcast')" id="tab-podcast" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-base">🎙️</span>
+            <span>PodStudy</span>
+        </button>
+        <button onclick="switchTab('tutor')" id="tab-tutor" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-base">🧠</span>
+            <span>AI Tutor</span>
+        </button>
+        <button onclick="switchTab('summaries')" id="tab-summaries" class="flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark">
+            <span class="text-base">📖</span>
+            <span>Resumos</span>
+        </button>
+    </nav>
+
+    <script>
+        // Questões Objetivas
+        const questionsList = [
+            {
+                id: 1,
+                category: 'satepsi',
+                source: 'Questões para Estudar - Q1',
+                text: 'De acordo com o texto sobre os avanços e desafios na avaliação psicológica, a observação e a entrevista psicológica são técnicas que permeiam todas as áreas da psicologia. É correto afirmar que:\n\nI. O conhecimento qualitativo e o clínico são predominantes no raciocínio do psicólogo.\nII. O teste psicológico é uma ferramenta que complementa a avaliação, possibilitando avaliar fenômenos não acessíveis diretamente. O profissional com domínio teórico e técnico pode chegar a uma decisão ética e confiável.\nIII. Conforme os Artigos 8º e 9º da Resolução CFP 31/2022, o teste psicológico e seu respectivo manual técnico são de uso exclusivo do psicólogo.\n\nQuais proposições estão corretas?',
+                options: [
+                    'Apenas a I e a II',
+                    'Apenas a II e a III',
+                    'Apenas a I e a III',
+                    'Todas as afirmativas (I, II e III) estão corretas'
+                ],
+                correctIndex: 3,
+                explanation: 'Todas as três premissas correspondem aos avanços e limites descritos na Resolução CFP 31/2022. O teste é ferramenta complementar, de uso exclusivo do psicólogo.',
+                legalRef: 'Resolução CFP nº 31/2022, Artigos 8º e 9º'
+            },
+            {
+                id: 2,
+                category: 'satepsi',
+                source: 'Questões para Estudar - Q2',
+                text: 'Em relação aos desafios enfrentados pelos profissionais com o uso de computadores e das Tecnologias Digitais da Informação e Comunicação (TDICs), assinale a alternativa correta:',
+                options: [
+                    'O formato informatizado permite testes adaptados com bancos de itens reduzidos e variação de estímulos.',
+                    'É crucial o desenvolvimento de estudos empíricos para avaliar o impacto real das TDICs na construção do vínculo terapêutico e no rapport.',
+                    'Psicólogos de todo o país possuem ampla e irrestrita facilidade de treinamento e formação em tecnologias de ponta.',
+                    'O principal entrave no uso das TDICs é o excesso de regulamentações para prescrição medicamentosa.'
+                ],
+                correctIndex: 1,
+                explanation: 'O avanço das tecnologias de aplicação de testes exige maior aprofundamento empírico do impacto no rapport e na relação de atendimento terapêutico.',
+                legalRef: 'Texto de Apoio: "Avanços e Desafios", de Ribeiro & Oliveira (2025)'
+            },
+            {
+                id: 3,
+                category: 'satepsi',
+                source: 'Questões para Estudar - Q3',
+                text: 'Quanto aos requisitos mínimos e obrigatórios estabelecidos para aprovação de testes pelo SATEPSI, assinale o correto:',
+                options: [
+                    'O teste precisa apresentar fundamentação teórica robusta com definição clara dos construtos e descrição detalhada de seus aspectos constitutivos e operacionais.',
+                    'Os testes de livre uso não necessitam de verificação técnica da CCAP.',
+                    'O material de avaliação gráfica e estímulos teóricos pode ser flexibilizado em favor da pressa mercadológica.',
+                    'A fidedignidade do teste dispensa o sistema de correção normativa se houver amostragem internacional.'
+                ],
+                correctIndex: 0,
+                explanation: 'O Artigo 15 define como requisito fundamental que o manual técnico do teste apresente conceituação e especificação clara de seu construto de mensuração.',
+                legalRef: 'Resolução CFP nº 31/2022, Art. 15, Inciso I'
+            },
+            {
+                id: 4,
+                category: 'docs',
+                source: 'Questões para Estudar - Q4',
+                text: 'O psicodiagnóstico clínico consiste em um processo investigativo fundamental. Assinale a alternativa correta de acordo com a visão contemporânea da psicologia:',
+                options: [
+                    'Sua exclusiva função reside em rotular transtornos psiquiátricos severos.',
+                    'O processo não atua de forma interventiva ou terapêutica.',
+                    'O psicodiagnóstico visa unicamente a aplicação massiva de testes computorizados em uma só sessão.',
+                    'Ele consiste em um processo investigativo delimitado no tempo que também identifica as forças e fatores protetivos do paciente, não se restringindo a buscar disfunções.'
+                ],
+                correctIndex: 3,
+                explanation: 'A prática contemporânea de psicodiagnóstico compreende o sujeito de maneira integrada, buscando forças de resiliência e fatores protetivos.',
+                legalRef: 'Manual de Psicodiagnóstico / Bandeira et al. (2016)'
+            },
+            {
+                id: 5,
+                category: 'docs',
+                source: 'Questões para Estudar - Q5',
+                text: 'A entrevista devolutiva é considerada a última etapa da Avaliação Psicológica. Qual o objetivo prioritário dessa etapa?',
+                options: [
+                    'Recuperar os motivos da avaliação, refletir sobre o processo, comunicar os resultados e sugerir os encaminhamentos terapêuticos cabíveis.',
+                    'Entregar formalmente o laudo impresso ao paciente sem dar espaço para manifestações subjetivas.',
+                    'Efetuar novos testes e inventários de confirmação rápida.',
+                    'Reavaliar o valor financeiro do serviço e as horas gastas.'
+                ],
+                correctIndex: 0,
+                explanation: 'A devolução deve ser realizada de forma interativa e dinâmica, orientando o sujeito sobre as intervenções mais eficientes observadas na avaliação.',
+                legalRef: 'Resolução CFP nº 06/2019, Art. 18'
+            },
+            {
+                id: 6,
+                category: 'satepsi',
+                source: 'Questões para Estudar - Q6',
+                text: 'Qual alternativa melhor define a atuação e a função da CCAP (Comissão Consultiva em Avaliação Psicológica)?',
+                options: [
+                    'A CCAP emite pareceres técnicos sobre novos instrumentos de avaliação, propõe revisões em diretrizes regulatórias e promove guias para qualificar o exercício profissional.',
+                    'Consiste em uma agência privada voltada à venda comercial de testes nas universidades.',
+                    'O único papel da comissão é punir psicólogos envolvidos em desvios éticos.',
+                    'Sua responsabilidade restringe-se ao controle e aplicação de provas adaptadas presença.'
+                ],
+                correctIndex: 0,
+                explanation: 'A CCAP é comissão permanente consultiva que atua na governança e certificação técnica do SATEPSI.',
+                legalRef: 'Resolução CFP nº 31/2022, Artigos 13 e 18'
+            },
+            {
+                id: 7,
+                category: 'docs',
+                source: 'Questões para Estudar - Q7',
+                text: 'De acordo com laudo ou declaração, o que caracteriza e define uma Declaração Psicológica?',
+                options: [
+                    'Registrar comparecimento da pessoa ou acompanhante, vigência e horários do atendimento, sendo terminantemente proibido o registro de sintomas ou diagnósticos.',
+                    'Documento que atesta incapacidade mental com base em exames médicos complementares.',
+                    'Relatório robusto contendo o psicodiagnóstico nosológico completo do sujeito.',
+                    'Apresentar análise teórica detalhada a fim de refutar documentos psicológicos de outros profissionais.'
+                ],
+                correctIndex: 0,
+                explanation: 'A Declaração é documento de ordem burocrática, não cabendo qualquer anotação de sintomas, diagnósticos ou estados psicológicos.',
+                legalRef: 'Resolução CFP nº 06/2019, Art. 9º'
+            },
+            {
+                id: 8,
+                category: 'satepsi',
+                source: 'Questões para Estudar - Q8',
+                text: 'Conforme as exigências técnicas da área, assinale qual critério é eliminatório para que um teste psicológico seja aprovado para uso profissional no Brasil:',
+                options: [
+                    'Apresentação de amostras recolhidas apenas no país de origem do teste, sem necessidade de equivalência brasileira.',
+                    'Apresentação de tabelas de escores normatizados internacionais sem estudos de adaptação.',
+                    'Apresentação de evidências empíricas nacionais de validade e estimativas de fidedignidade/precisão adequadas para a população brasileira.',
+                    'A aprovação dispensa estudos empíricos se o teste for do tipo projetivo.'
+                ],
+                correctIndex: 2,
+                explanation: 'É eliminatório o teste não apresentar coeficientes empíricos e parâmetros psicométricos recolhidos na população nacional.',
+                legalRef: 'Resolução CFP nº 31/2022, Art. 15, Inciso VI'
+            },
+            {
+                id: 9,
+                category: 'satepsi',
+                source: 'Exercício - Questão 3',
+                text: 'O SATEPSI (Sistema de Avaliação de Testes Psicológicos) tem como principal objetivo:',
+                options: [
+                    'Atuar na venda de materiais psicológicos exclusivos nas editoras credenciadas.',
+                    'Avaliar e regulamentar a qualidade técnico-científica dos instrumentos de avaliação em uso profissional no país.',
+                    'Oferecer formação acadêmica obrigatória para novos psicólogos clínicos.',
+                    'Substituir o uso de interviews e observações comportamentais na clínica.'
+                ],
+                correctIndex: 1,
+                explanation: 'SATEPSI foi formulado em 2003 para certificar e disponibilizar as listagens de testes adequados e reprovados com base nos requisitos psicométricos exigidos.',
+                legalRef: 'Resolução CFP nº 31/2022, Art. 1º, §2º'
+            },
+            {
+                id: 10,
+                category: 'docs',
+                source: 'Exercício - Questão 1',
+                text: 'Conforme a Resolução CFP nº 06/2019, os prontuários, documentos e materiais decorrentes do serviço de Avaliação Psicológica devem ser guardados por qual período mínimo?',
+                options: [
+                    'Pelo prazo de 1 ano.',
+                    'Mínimo de 3 anos, apenas em formato digital criptografado.',
+                    'Prazo mínimo de 5 anos, em arquivo físico ou digital, sob responsabilidade do profissional e instituição.',
+                    'A guarda é facultativa para profissionais autônomos de consultórios privados.'
+                ],
+                correctIndex: 2,
+                explanation: 'O Artigo 15 estabelece expressamente o dever ético e legal de manter os arquivos em condições seguras de sigilo por ao menos cinco anos.',
+                legalRef: 'Resolução CFP nº 06/2019, Art. 15'
+            }
+        ];
+
+        // Questões Dissertativas
+        const dissertativeList = [
+            {
+                id: 101,
+                source: 'Questões para Estudar - Q9',
+                text: 'No texto de apoio, as autoras mencionam que no Brasil a história da Avaliação Psicológica se confunde com a própria história da Psicologia. Nesse contexto, defina com clareza o que é Avaliação Psicológica de acordo com as normas vigentes.',
+                keywords: ['estruturado', 'investigação', 'fenômenos psicológicos', 'métodos', 'técnicas', 'instrumentos', 'tomada de decisão', 'específicas'],
+                explanation: 'A Avaliação Psicológica é um processo estruturado de investigação de fenômenos psicológicos, composto de métodos, técnicas e instrumentos, com o objetivo de prover informações à tomada de decisão, no âmbito individual, grupal ou institucional, com base em demandas, condições e finalidades específicas.',
+                legalRef: 'Resolução CFP nº 31/2022, Art. 1º, §1º'
+            },
+            {
+                id: 102,
+                source: 'Questões para Estudar - Q10',
+                text: 'De acordo com a Resolução CFP nº 31/2022, defina o objetivo e as atribuições do SATEPSI (Sistema de Avaliação de Testes Psicológicos).',
+                keywords: ['avaliar', 'qualidade', 'técnico-científica', 'instrumentos', 'profissional', 'requisitos', 'divulgar', 'comunidade'],
+                explanation: 'O SATEPSI tem por objetivo avaliar a qualidade técnico-científica de instrumentos psicológicos para uso profissional, a partir da verificação objetiva de um conjunto de requisitos técnicos e divulgar informações sobre os testes psicológicos à comunidade, às psicólogas e aos psicólogos.',
+                legalRef: 'Resolução CFP nº 31/2022, Art. 1º, §2º'
+            },
+            {
+                id: 103,
+                source: 'Resolução CFP 06/2019 - Art. 9º',
+                text: 'Explique de forma detalhada o conceito de uma Declaração Psicológica e quais informações/registros são expressamente proibidos de constar nela.',
+                keywords: ['comparecimento', 'acompanhamento', 'tempo', 'vedado', 'sintomas', 'situações', 'estados', 'proibido', 'diagnósticos'],
+                explanation: 'A declaração tem a finalidade de registrar comparecimento, acompanhamento em realização ou realizado, tempo, dias e horários. É expressamente VEDADO o registro de sintomas, situações, diagnósticos ou estados psicológicos.',
+                legalRef: 'Resolução CFP nº 06/2019, Art. 9º e §1º'
+            }
+        ];
+
+        // Lista de Flashcards
+        const flashcardsList = [
+            { id: 1, question: "Qual o prazo de validade máximo dos estudos de fidedignidade, precisão e normatização de um teste no SATEPSI?", answer: "Prazo máximo de 15 anos a contar da homologação do parecer favorável pelo CFP." },
+            { id: 2, question: "O que o psicólogo é obrigado a fazer antes de efetuar a entrega de um Laudo ou Relatório Psicológico?", answer: "Realizar ao menos uma Entrevista Devolutiva ao paciente ou aos seus responsáveis legais." },
+            { id: 3, question: "Qual o prazo mínimo determinado para a guarda de prontuários de AP?", answer: "Prazo mínimo de 5 anos, sob responsabilidade compartilhada do psicólogo e da instituição de atendimento." },
+            { id: 4, question: "Qual a diferença estrutural elementar entre uma Declaração e um Atestado?", answer: "A Declaração é um documento de comparecimento e vigência de tratamento (sem sintomas/CIDs). O Atestado resulta de um processo técnico de avaliação psicológica que assevera o funcionamento ou aptidão mental de forma conclusiva." },
+            { id: 5, question: "Quais as 3 fontes fundamentais na Avaliação Psicológica?", answer: "1. Testes aprovados no SATEPSI. 2. Entrevistas psicológicas e anamnese. 3. Protocolos ou registros de observação do comportamento." },
+            { id: 6, question: "Qual documento escrito de AP obrigatoriamente exige referências científicas bibliográficas?", answer: "O Laudo Psicológico e o Parecer Psicológico exigem referências bibliográficas de sustentação técnica das análises." },
+            { id: 7, question: "Um teste reprovado no SATEPSI pode ser utilizado em contextos de ensino formativo e histórico universitário?", answer: "Sim, conforme a Resolução CFP nº 31/2022, testes desfavoráveis podem ser empregados exclusivamente para fins históricos acadêmicos e pesquisas científicas aprovadas." },
+            { id: 8, question: "Quantos dias úteis o solicitante do teste tem para entrar com recurso no CFP após um parecer desfavorável da CCAP?", answer: "Prazo de 30 dias úteis, a contar da ciência oficial do resultado plenário do Conselho Federal." }
+        ];
+
+        // Resumos das Resoluções
+        const summariesData = {
+            docs: `
+                <div class="space-y-3 font-sans text-xs">
+                    <p class="font-bold text-brand-accent">REGRAS PARA ELABORAÇÃO DE DOCUMENTOS (RESOLUÇÃO 06/2019)</p>
+                    <p>A norma regulamenta as 5 modalidades oficiais produzidas pela prática:</p>
+                    <ul class="list-disc pl-4 space-y-1">
+                        <li><strong>Declaração:</strong> Registra de forma sucinta fatos como comparecimento, tempo de tratamento e horários. <strong>VETADO</strong> registrar diagnóstico, sintomas ou CIDs.</li>
+                        <li><strong>Atestado:</strong> Afirma e comprova funcionamento psíquico com base em diagnóstico resultante de AP. Serve para justificar faltas ou asseverar aptidão física e mental.</li>
+                        <li><strong>Relatório:</strong> Descritivo e focado em detalhar a evolução do tratamento clínico ou acompanhamento institucional. Não visa diagnóstico psicométrico.</li>
+                        <li><strong>Laudo:</strong> Peça com valor científico decorrente de processo estruturado de avaliação. Requer rigor metodológico completo de testagens.</li>
+                        <li><strong>Parecer:</strong> Pronunciamento específico visando sanar uma dúvida-problema consultiva de terceiros.</li>
+                    </ul>
+                </div>
+            `,
+            satepsi: `
+                <div class="space-y-3 font-sans text-xs">
+                    <p class="font-bold text-brand-accent">SATEPSI & DIRETRIZES DE AVALIAÇÃO (RESOLUÇÃO 31/2022)</p>
+                    <p>Estabelece as normas e procedimentos de validação científica no Brasil:</p>
+                    <ul class="list-disc pl-4 space-y-1">
+                        <li><strong>SATEPSI:</strong> Responsável por inspecionar se os manuais técnicos nacionais possuem as qualidades psicométricas mínimas para comercialização legal.</li>
+                        <li><strong>Fontes Fundamentais:</strong> Entrevistas clínicas, anamneses, observação e testes credenciados. É dever utilizar ao menos 2 métodos consolidados no processo.</li>
+                        <li><strong>Vigência:</strong> Estudos de validade psicométrica e parâmetros normatizados duram no máximo 15 anos. Se expirar, o instrumento vira "desfavorável" no sistema e seu uso profissional gera punição disciplinar ética.</li>
+                    </ul>
+                </div>
+            `
+        };
+
+        // Podcast Dividido - Diálogos Rápidos e Naturais entre Freudinho e Lelé (Menos de 1 minuto por faixa)
+        const podcastTracks = [
+            {
+                title: "Trilha 1: As 2 Fontes Fundamentais",
+                duration: 45,
+                script: [
+                    { host: "Lelé", text: "Freudinho, me ajuda aqui! Tem como eu fazer um processo de avaliação psicológica inteiro usando só duas fontes?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "Claro que sim, Lelé! A Resolução trinta e um diz que se você fizer entrevista e observação comportamental de qualidade, já tem duas fontes fundamentais válidas para fechar o processo.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Nossa, que alívio! Eu achava que a aplicação de testes aprovados pelo Satepsi era sempre obrigatória.", start: 28, end: 36 },
+                    { host: "Freudinho", text: "Não, eles são ótimas ferramentas complementares, mas o seu raciocínio clínico vale muito mais!", start: 36, end: 45 }
+                ]
+            },
+            {
+                title: "Trilha 2: O Limite da Declaração",
+                duration: 40,
+                script: [
+                    { host: "Lelé", text: "Professor, na questão sete da prova caiu sobre a Declaração. O que eu posso de fato escrever nela?", start: 0, end: 10 },
+                    { host: "Freudinho", text: "Anote aí: apenas fatos burocráticos! Comparecimento da pessoa, horários, dias de consulta e tempo de tratamento.", start: 10, end: 22 },
+                    { host: "Lelé", text: "E posso colocar que o paciente está com sintomas de ansiedade grave ou depressão?", start: 22, end: 30 },
+                    { host: "Freudinho", text: "Nunca! É terminantemente vedado colocar sintomas, diagnósticos ou estados psicológicos em uma Declaração. Lembre-se disso!", start: 30, end: 40 }
+                ]
+            },
+            {
+                title: "Trilha 3: Prazos do SATEPSI",
+                duration: 48,
+                script: [
+                    { host: "Lelé", text: "Socorro, Freudinho! São muitos prazos diferentes na Resolução trinta e um. Qual é o limite de validade de um teste?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "Calma, Lelé. Os estudos de fidedignidade, precisão e normatização nacional duram no máximo quinze anos. Passou disso, precisa atualizar.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Entendi! E se o teste for reprovado e a editora quiser recorrer?", start: 28, end: 36 },
+                    { host: "Freudinho", text: "Aí são trinta dias úteis após a plenária do Conselho Federal de Psicologia para enviar o recurso técnico.", start: 36, end: 48 }
+                ]
+            },
+            {
+                title: "Trilha 4: Psicodiagnóstico e Forças",
+                duration: 42,
+                script: [
+                    { host: "Lelé", text: "Professor Freudinho, psicodiagnóstico serve só para dar rótulo ou CID pras pessoas?", start: 0, end: 10 },
+                    { host: "Freudinho", text: "Excelente pergunta! Antigamente focavam muito na disfunção, mas hoje o processo também busca mapear as forças e fatores protetivos do paciente.", start: 10, end: 25 },
+                    { host: "Lelé", text: "Ah, que bom! Assim fica mais humanizado e ajuda de verdade na intervenção clínica posterior, né?", start: 25, end: 34 },
+                    { host: "Freudinho", text: "Perfeitamente. Ele identifica potencialidades para promover saúde mental.", start: 34, end: 42 }
+                ]
+            },
+            {
+                title: "Trilha 5: Devolutiva Obrigatória",
+                duration: 40,
+                script: [
+                    { host: "Lelé", text: "Acabei a avaliação! Posso só mandar o laudo por e-mail para o paciente e encerrar o caso?", start: 0, end: 11 },
+                    { host: "Freudinho", text: "De jeito nenhum! Realizar ao menos uma entrevista devolutiva é um dever ético obrigatório para entrega de laudos ou relatórios.", start: 11, end: 25 },
+                    { host: "Lelé", text: "E se a pessoa sumir ou se recusar a ir na sessão?", start: 25, end: 31 },
+                    { host: "Freudinho", text: "Aí você deve documentar e deixar registrado em prontuário os motivos da impossibilidade.", start: 31, end: 40 }
+                ]
+            },
+            {
+                title: "Trilha 6: Desafios das TDICs",
+                duration: 50,
+                script: [
+                    { host: "Lelé", text: "Adoro tecnologia! Mas quais os principais desafios com o uso de computadores e testes online hoje em dia?", start: 0, end: 12 },
+                    { host: "Freudinho", text: "O grande desafio é avaliar empiricamente como essas tecnologias influenciam o vínculo e o rapport com o paciente durante a testagem.", start: 12, end: 28 },
+                    { host: "Lelé", text: "Sim! Porque sem empatia e um bom vínculo, os resultados podem ficar bem distorcidos, né?", start: 28, end: 38 },
+                    { host: "Freudinho", text: "Exato! O Satepsi tem exigido rigor nesses estudos de equivalência para garantir aplicações remotas seguras e éticas.", start: 38, end: 50 }
+                ]
+            }
+        ];
+
+        let quizType = 'obj'; // 'obj' para objetivas, 'diss' para dissertativas
+        let currentQuestions = [...questionsList];
+        let currentQuestionIndex = 0;
+        let currentFlashcardIndex = 0;
+        let selectedOptionIndex = null;
+        let correctAnswersCount = 0;
+        let currentTrackIndex = 0;
+        let isPodcastPlaying = false;
+        let currentPodcastTurnIndex = 0;
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let masteredFlashcards = new Set();
+        let answeredQuestions = new Set();
+
+        // Variáveis de controle de tempo do podcast
+        let trackTimerInterval = null;
+        let currentElapsedSeconds = 0;
+
+        window.onload = function() {
+            loadQuestion();
+            loadFlashcard();
+            showSummarySection('summary-docs');
+            updateStats();
+            detectSystemTheme();
+            selectPodcastTrack(0);
+        };
+
+        // Controle de Abas Inferiores
+        function switchTab(tabId) {
+            const tabs = ['quiz', 'flashcards', 'podcast', 'tutor', 'summaries'];
+            tabs.forEach(t => {
+                document.getElementById(`section-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-muted dark:text-brand-mutedDark";
+            });
+
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).className = "flex flex-col items-center flex-grow py-1 font-mono font-bold text-[9px] text-brand-accent";
+            
+            // Pausar o podcast ao mudar de tela para manter a fluidez do iOS
+            if (tabId !== 'podcast' && isPodcastPlaying) {
+                stopPodcast();
+            }
+        }
+
+        // Modo Noturno Dinâmico adaptado com tons quentes de fundo
+        function detectSystemTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                setThemeButtonUI(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                setThemeButtonUI(false);
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            setThemeButtonUI(isDark);
+        }
+
+        function setThemeButtonUI(isDark) {
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            if (isDark) {
+                icon.innerText = '☀️';
+                text.innerText = 'Modo Claro';
+            } else {
+                icon.innerText = '🌙';
+                text.innerText = 'Modo Escuro';
+            }
+        }
+
+        // Configuração do Tipo de Questão (Objetivas / Dissertativas)
+        function setQuizType(type) {
+            quizType = type;
+            const btnObj = document.getElementById('btn-type-obj');
+            const btnDiss = document.getElementById('btn-type-diss');
+            const filters = document.getElementById('quiz-filters-container');
+            const objContainer = document.getElementById('quiz-options-container');
+            const dissContainer = document.getElementById('quiz-dissertative-container');
+
+            if (type === 'obj') {
+                btnObj.className = "flex-1 py-1 text-center font-mono text-[10px] font-bold rounded bg-brand-panel text-brand-dark border border-brand-dark dark:bg-brand-panelDark dark:text-gray-100";
+                btnDiss.className = "flex-1 py-1 text-center font-mono text-[10px] font-bold rounded text-brand-muted dark:text-brand-mutedDark";
+                filters.classList.remove('hidden');
+                objContainer.classList.remove('hidden');
+                dissContainer.classList.add('hidden');
+                currentQuestions = [...questionsList];
+            } else {
+                btnDiss.className = "flex-1 py-1 text-center font-mono text-[10px] font-bold rounded bg-brand-panel text-brand-dark border border-brand-dark dark:bg-brand-panelDark dark:text-gray-100";
+                btnObj.className = "flex-1 py-1 text-center font-mono text-[10px] font-bold rounded text-brand-muted dark:text-brand-mutedDark";
+                filters.classList.add('hidden');
+                objContainer.classList.add('hidden');
+                dissContainer.classList.remove('hidden');
+                currentQuestions = [...dissertativeList];
+            }
+            currentQuestionIndex = 0;
+            loadQuestion();
+        }
+
+        function filterQuestions(type) {
+            const btnAll = document.getElementById('btn-filt-all');
+            const btnDocs = document.getElementById('btn-filt-docs');
+            const btnSatepsi = document.getElementById('btn-filt-satepsi');
+
+            [btnAll, btnDocs, btnSatepsi].forEach(b => {
+                b.className = "text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-panel text-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200 whitespace-nowrap";
+            });
+
+            const activeBtn = document.getElementById(`btn-filt-${type}`);
+            activeBtn.className = "text-[9px] font-mono font-bold px-2.5 py-1 rounded border border-brand-dark bg-brand-dark text-white dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark whitespace-nowrap";
+
+            if (type === 'all') {
+                currentQuestions = [...questionsList];
+            } else {
+                currentQuestions = questionsList.filter(q => q.category === type);
+            }
+            currentQuestionIndex = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestions.length === 0) return;
+            const q = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('quiz-progress-text').innerText = `${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+            document.getElementById('question-source').innerText = q.source;
+            document.getElementById('question-text').innerText = q.text;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+            selectedOptionIndex = null;
+            
+            // Reseta área de escrita dissertativa
+            document.getElementById('dissertative-user-answer').value = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('dissertative-analysis-box').classList.add('hidden');
+
+            if (quizType === 'obj') {
+                q.options.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'w-full text-left p-2.5 border border-brand-dark rounded text-xs font-sans font-medium hover:bg-stone-50 transition-all flex items-center gap-3 bg-white dark:bg-brand-panelDark dark:border-brand-lightBorder dark:hover:bg-stone-800 text-stone-800 dark:text-stone-100';
+                    btn.id = `option-${idx}`;
+                    btn.onclick = () => selectOption(idx);
+                    
+                    const letter = String.fromCharCode(65 + idx);
+                    btn.innerHTML = `<span class="font-mono font-extrabold bg-stone-100 text-stone-800 border border-brand-dark px-2 py-0.5 rounded dark:bg-stone-800 dark:text-stone-100">${letter}</span> <span>${opt}</span>`;
+                    optionsContainer.appendChild(btn);
+                });
+            }
+        }
+
+        function selectOption(index) {
+            if (!document.getElementById('quiz-feedback').classList.contains('hidden')) return;
+
+            if (selectedOptionIndex !== null) {
+                const prevBtn = document.getElementById(`option-${selectedOptionIndex}`);
+                if (prevBtn) {
+                    prevBtn.classList.remove('bg-amber-50', 'border-brand-accent');
+                    prevBtn.classList.add('bg-white', 'dark:bg-brand-panelDark');
+                }
+            }
+            selectedOptionIndex = index;
+            const targetBtn = document.getElementById(`option-${index}`);
+            targetBtn.classList.remove('bg-white', 'dark:bg-brand-panelDark');
+            targetBtn.classList.add('bg-amber-50', 'border-brand-accent', 'dark:bg-stone-800');
+        }
+
+        // Avaliação de Questões
+        function evaluateCurrentQuestion() {
+            if (quizType === 'obj') {
+                checkSelectedAnswer();
+            } else {
+                checkDissertativeAnswer();
+            }
+        }
+
+        function checkSelectedAnswer() {
+            if (selectedOptionIndex === null) return;
+            
+            const q = currentQuestions[currentQuestionIndex];
+            const feedbackContainer = document.getElementById('quiz-feedback');
+            const icon = document.getElementById('feedback-status-icon');
+            const title = document.getElementById('feedback-status-title');
+            const exp = document.getElementById('feedback-explanation');
+            const legal = document.getElementById('feedback-legal-ref');
+
+            const isCorrect = selectedOptionIndex === q.correctIndex;
+            
+            if (!answeredQuestions.has(q.id)) {
+                answeredQuestions.add(q.id);
+                if (isCorrect) {
+                    correctAnswersCount++;
+                }
+                updateStats();
+            }
+
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`option-${idx}`);
+                if (idx === q.correctIndex) {
+                    btn.className = 'w-full text-left p-3 border-2 border-emerald-600 rounded text-xs font-sans font-medium flex items-center gap-3 bg-emerald-100 text-emerald-950 dark:bg-emerald-950 dark:text-emerald-100';
+                } else if (idx === selectedOptionIndex) {
+                    btn.className = 'w-full text-left p-3 border-2 border-rose-600 rounded text-xs font-sans font-medium flex items-center gap-3 bg-rose-100 text-rose-950 dark:bg-rose-950 dark:text-rose-100';
+                }
+            });
+
+            feedbackContainer.classList.remove('hidden');
+            if (isCorrect) {
+                icon.innerText = '✅';
+                title.innerText = 'Correto!';
+                title.className = 'font-mono font-extrabold text-xs uppercase text-emerald-700 dark:text-emerald-400';
+            } else {
+                icon.innerText = '❌';
+                title.innerText = 'Incorreto!';
+                title.className = 'font-mono font-extrabold text-xs uppercase text-rose-700 dark:text-rose-400';
+            }
+
+            exp.innerText = q.explanation;
+            legal.innerText = q.legalRef;
+        }
+
+        function checkDissertativeAnswer() {
+            const userAnswer = document.getElementById('dissertative-user-answer').value.trim();
+            if (!userAnswer) {
+                alert("Por favor, digite uma resposta antes de confirmar!");
+                return;
+            }
+
+            const q = currentQuestions[currentQuestionIndex];
+            const feedbackContainer = document.getElementById('quiz-feedback');
+            const icon = document.getElementById('feedback-status-icon');
+            const title = document.getElementById('feedback-status-title');
+            const exp = document.getElementById('feedback-explanation');
+            const legal = document.getElementById('feedback-legal-ref');
+            const analysisBox = document.getElementById('dissertative-analysis-box');
+            const keywordsMatchedList = document.getElementById('keywords-matched-list');
+
+            // Varredura de palavras-chave
+            const normalizedText = userAnswer.toLowerCase();
+            let matchesCount = 0;
+            keywordsMatchedList.innerHTML = '';
+
+            q.keywords.forEach(kw => {
+                const badge = document.createElement('span');
+                const matched = normalizedText.includes(kw.toLowerCase());
+                if (matched) {
+                    matchesCount++;
+                    badge.className = "text-[9px] font-mono font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-300";
+                    badge.innerText = `✓ ${kw}`;
+                } else {
+                    badge.className = "text-[9px] font-mono font-semibold bg-rose-50 text-rose-800 dark:bg-rose-900/10 dark:text-rose-300 px-2 py-0.5 rounded-full border border-rose-200 line-through opacity-60";
+                    badge.innerText = `✗ ${kw}`;
+                }
+                keywordsMatchedList.appendChild(badge);
+            });
+
+            // Determina pontuação
+            const matchRatio = matchesCount / q.keywords.length;
+            feedbackContainer.classList.remove('hidden');
+            analysisBox.classList.remove('hidden');
+
+            if (!answeredQuestions.has(q.id)) {
+                answeredQuestions.add(q.id);
+                if (matchRatio >= 0.5) {
+                    correctAnswersCount++;
+                }
+                updateStats();
+            }
+
+            if (matchRatio >= 0.75) {
+                icon.innerText = '🏆';
+                title.innerText = 'Excelente! Conceitos Sólidos';
+                title.className = 'font-mono font-extrabold text-xs uppercase text-emerald-700 dark:text-emerald-400';
+                exp.innerHTML = `Sua resposta foi precisa e abordou a maior parte dos termos fundamentais exigidos para o gabarito. <br><br><strong>Gabarito de Referência:</strong> ${q.explanation}`;
+            } else if (matchRatio >= 0.4) {
+                icon.innerText = '📐';
+                title.innerText = 'Parcialmente Correto';
+                title.className = 'font-mono font-extrabold text-xs uppercase text-amber-700 dark:text-amber-400';
+                exp.innerHTML = `Bom começo! No entanto, faltaram alguns termos técnicos fundamentais. Tente integrar mais palavras-chave da resolução para estruturar melhor seu argumento.<br><br><strong>Gabarito de Referência:</strong> ${q.explanation}`;
+            } else {
+                icon.innerText = '⚠️';
+                title.innerText = 'Precisa Melhorar';
+                title.className = 'font-mono font-extrabold text-xs uppercase text-rose-700 dark:text-rose-400';
+                exp.innerHTML = `Sua resposta ficou muito distante dos conceitos exigidos. Leia com calma a resolução de referência e refaça a questão para fixar os conceitos chaves.<br><br><strong>Gabarito de Referência:</strong> ${q.explanation}`;
+            }
+
+            legal.innerText = q.legalRef;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuestions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        // Gerenciamento de Flashcards
+        function loadFlashcard() {
+            const card = flashcardsList[currentFlashcardIndex];
+            document.getElementById('flashcard-counter').innerText = `${currentFlashcardIndex + 1} / ${flashcardsList.length}`;
+            document.getElementById('flashcard-question').innerText = card.question;
+            document.getElementById('flashcard-answer').innerText = card.answer;
+            
+            // Remove flip state on load
+            document.getElementById('flashcard-inner').classList.remove('card-flipped');
+        }
+
+        function flipCard() {
+            document.getElementById('flashcard-inner').classList.toggle('card-flipped');
+        }
+
+        function nextFlashcard() {
+            if (currentFlashcardIndex < flashcardsList.length - 1) {
+                currentFlashcardIndex++;
+                loadFlashcard();
+            }
+        }
+
+        function prevFlashcard() {
+            if (currentFlashcardIndex > 0) {
+                currentFlashcardIndex--;
+                loadFlashcard();
+            }
+        }
+
+        function markFlashcardMastered(mastered) {
+            const currentCard = flashcardsList[currentFlashcardIndex];
+            if (mastered) {
+                masteredFlashcards.add(currentCard.id);
+            } else {
+                masteredFlashcards.delete(currentCard.id);
+            }
+            updateStats();
+            nextFlashcard();
+        }
+
+        // Estatísticas Gerais de Estudo
+        function updateStats() {
+            const answeredEl = document.getElementById('stat-answered');
+            const masteredEl = document.getElementById('stat-mastered');
+            const accuracyEl = document.getElementById('stat-accuracy');
+            const progressBar = document.getElementById('stat-progress-bar');
+
+            answeredEl.innerText = `${answeredQuestions.size}/${questionsList.length + dissertativeList.length}`;
+            masteredEl.innerText = `${masteredFlashcards.size}/${flashcardsList.length}`;
+
+            const accuracy = answeredQuestions.size > 0 ? Math.round((correctAnswersCount / answeredQuestions.size) * 100) : 0;
+            accuracyEl.innerText = `${accuracy}%`;
+
+            const progressPercent = Math.round(((answeredQuestions.size + masteredFlashcards.size) / (questionsList.length + dissertativeList.length + flashcardsList.length)) * 100);
+            progressBar.style.width = `${progressPercent}%`;
+        }
+
+        function showSummarySection(sectId) {
+            const docsBtn = document.getElementById('btn-sum-docs');
+            const satepsiBtn = document.getElementById('btn-sum-satepsi');
+
+            if (sectId === 'summary-docs') {
+                docsBtn.className = "flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-dark text-white rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark";
+                satepsiBtn.className = "flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-panel text-brand-dark rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200";
+                document.getElementById('summary-content').innerHTML = summariesData.docs;
+            } else {
+                satepsiBtn.className = "flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-dark text-white rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-lightBorder dark:text-brand-dark";
+                docsBtn.className = "flex-1 px-2 py-1.5 font-mono text-[10px] font-bold bg-brand-panel text-brand-dark rounded-t border-t border-x border-brand-dark dark:border-brand-lightBorder dark:bg-brand-panelDark dark:text-gray-200";
+                document.getElementById('summary-content').innerHTML = summariesData.satepsi;
+            }
+        }
+
+        // Gerenciamento de Track do PodStudy
+        function selectPodcastTrack(index) {
+            stopPodcast();
+            currentTrackIndex = index;
+            const track = podcastTracks[index];
+            
+            // Alterar visual dos botões de track
+            for (let i = 0; i < 6; i++) {
+                const btn = document.getElementById(`btn-track-${i}`);
+                if (btn) {
+                    if (i === index) {
+                        btn.className = "w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-pink/40 text-brand-dark dark:border-brand-lightBorder dark:bg-stone-800 dark:text-white";
+                    } else {
+                        btn.className = "w-full text-left p-2 border border-brand-dark rounded text-xs font-sans font-bold flex items-center justify-between bg-brand-panel text-brand-dark dark:bg-brand-panelDark dark:border-brand-lightBorder dark:text-gray-200";
+                    }
+                }
+            }
+
+            document.getElementById('pod-title').innerText = track.title.toUpperCase();
+            
+            // Gerar Visual de Conversa estilo WhatsApp no Container
+            renderChatHistory(track);
+            
+            // Configurar Slider de Progresso
+            currentElapsedSeconds = 0;
+            document.getElementById('pod-progress-slider').value = 0;
+            document.getElementById('pod-time-current').innerText = "00:00";
+            document.getElementById('pod-time-total').innerText = formatTime(track.duration);
+        }
+
+        // Renderiza os balões de conversa no estilo WhatsApp
+        function renderChatHistory(track) {
+            const chatContainer = document.getElementById('podcast-chat-container');
+            chatContainer.innerHTML = '';
+
+            track.script.forEach((turn, idx) => {
+                const isLelé = turn.host === "Lelé";
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex w-full items-start gap-2 ${isLelé ? 'justify-end' : 'justify-start'}`;
+                wrapper.id = `chat-turn-wrapper-${idx}`;
+
+                // Avatar
+                const avatar = document.createElement('div');
+                avatar.className = `w-7 h-7 rounded-full flex items-center justify-center text-sm border border-brand-dark shrink-0 ${isLelé ? 'bg-brand-pink text-brand-dark order-last' : 'bg-brand-dark text-white'}`;
+                avatar.innerText = isLelé ? "🌸" : "🎓";
+
+                // Balão de Mensagem
+                const bubble = document.createElement('div');
+                bubble.id = `chat-bubble-${idx}`;
+                // Estilo baseado em quem fala
+                if (isLelé) {
+                    bubble.className = "max-w-[75%] p-2.5 rounded-lg border border-brand-dark text-xs leading-relaxed bg-brand-pink/30 text-stone-900 shadow-sm transition-all duration-300";
+                } else {
+                    bubble.className = "max-w-[75%] p-2.5 rounded-lg border border-brand-dark text-xs leading-relaxed bg-brand-panel dark:bg-brand-panelDark text-stone-800 dark:text-stone-100 shadow-sm transition-all duration-300";
+                }
+
+                // Header do balão
+                const hostName = document.createElement('span');
+                hostName.className = "font-mono font-bold text-[10px] block mb-0.5 text-brand-accent";
+                hostName.innerText = turn.host;
+
+                // Texto do balão
+                const messageText = document.createElement('p');
+                messageText.innerText = turn.text;
+
+                bubble.appendChild(hostName);
+                bubble.appendChild(messageText);
+                wrapper.appendChild(avatar);
+                wrapper.appendChild(bubble);
+                chatContainer.appendChild(wrapper);
+            });
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function togglePodcast() {
+            if (isPodcastPlaying) {
+                pausePodcast();
+            } else {
+                startPodcast();
+            }
+        }
+
+        function startPodcast() {
+            isPodcastPlaying = true;
+            document.getElementById('btn-play-podcast').innerText = '⏸️ Pausar Podcast';
+            
+            // Ativa ondas sonoras
+            document.getElementById('pod-avatar').className = "w-12 h-12 bg-brand-pink rounded-full flex items-center justify-center text-white text-xl animate-bounce";
+            animateWaves(true);
+
+            // Iniciar Contador de Tempo
+            startTrackTimer();
+
+            // Executar fala ativa
+            speakPodcastTurn();
+        }
+
+        function pausePodcast() {
+            isPodcastPlaying = false;
+            document.getElementById('btn-play-podcast').innerText = '▶️ Retomar Podcast';
+            document.getElementById('pod-avatar').className = "w-12 h-12 bg-brand-dark dark:bg-brand-lightBorder rounded-full flex items-center justify-center text-white dark:text-brand-dark text-xl";
+            animateWaves(false);
+            
+            clearInterval(trackTimerInterval);
+            if (synth) synth.cancel();
+        }
+
+        function stopPodcast() {
+            isPodcastPlaying = false;
+            currentPodcastTurnIndex = 0;
+            currentElapsedSeconds = 0;
+            document.getElementById('btn-play-podcast').innerText = '▶️ Iniciar Podcast';
+            document.getElementById('pod-avatar').className = "w-12 h-12 bg-brand-dark dark:bg-brand-lightBorder rounded-full flex items-center justify-center text-white dark:text-brand-dark text-xl";
+            animateWaves(false);
+
+            clearInterval(trackTimerInterval);
+            document.getElementById('pod-progress-slider').value = 0;
+            document.getElementById('pod-time-current').innerText = "00:00";
+
+            // Resetar destaques dos balões de conversa
+            resetChatHighlights();
+
+            if (synth) synth.cancel();
+        }
+
+        function resetChatHighlights() {
+            const track = podcastTracks[currentTrackIndex];
+            track.script.forEach((_, idx) => {
+                const b = document.getElementById(`chat-bubble-${idx}`);
+                if (b) {
+                    b.classList.remove('ring-4', 'ring-brand-accent/50', 'scale-105');
+                }
+            });
+        }
+
+        function startTrackTimer() {
+            clearInterval(trackTimerInterval);
+            const track = podcastTracks[currentTrackIndex];
+            
+            trackTimerInterval = setInterval(() => {
+                if (isPodcastPlaying) {
+                    currentElapsedSeconds++;
+                    if (currentElapsedSeconds >= track.duration) {
+                        currentElapsedSeconds = track.duration;
+                        stopPodcast();
+                    }
+                    
+                    // Atualiza UI
+                    document.getElementById('pod-time-current').innerText = formatTime(currentElapsedSeconds);
+                    const percent = (currentElapsedSeconds / track.duration) * 100;
+                    document.getElementById('pod-progress-slider').value = percent;
+
+                    // Sincronizar fala caso a minutagem passe do limite do turno atual
+                    checkTurnSinc(currentElapsedSeconds);
+                }
+            }, 1000);
+        }
+
+        function onSliderDrag(value) {
+            const track = podcastTracks[currentTrackIndex];
+            currentElapsedSeconds = Math.round((value / 100) * track.duration);
+            document.getElementById('pod-time-current').innerText = formatTime(currentElapsedSeconds);
+
+            // Verifica qual turno do diálogo corresponde a essa minutagem
+            let newTurnIndex = 0;
+            for (let i = 0; i < track.script.length; i++) {
+                if (currentElapsedSeconds >= track.script[i].start && currentElapsedSeconds < track.script[i].end) {
+                    newTurnIndex = i;
+                    break;
+                }
+            }
+
+            if (newTurnIndex !== currentPodcastTurnIndex) {
+                currentPodcastTurnIndex = newTurnIndex;
+                if (isPodcastPlaying) {
+                    if (synth) synth.cancel();
+                    speakPodcastTurn();
+                } else {
+                    highlightActiveBubble(currentPodcastTurnIndex);
+                }
+            }
+        }
+
+        function checkTurnSinc(elapsed) {
+            const track = podcastTracks[currentTrackIndex];
+            const currentTurn = track.script[currentPodcastTurnIndex];
+            if (currentTurn && (elapsed < currentTurn.start || elapsed >= currentTurn.end)) {
+                // Descobre o turno correto baseado no tempo
+                for (let i = 0; i < track.script.length; i++) {
+                    if (elapsed >= track.script[i].start && elapsed < track.script[i].end) {
+                        currentPodcastTurnIndex = i;
+                        if (synth) synth.cancel();
+                        speakPodcastTurn();
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Destaca o balão de conversa ativo estilo WhatsApp
+        function highlightActiveBubble(index) {
+            resetChatHighlights();
+            const bubble = document.getElementById(`chat-bubble-${index}`);
+            const wrapper = document.getElementById(`chat-turn-wrapper-${index}`);
+            const container = document.getElementById('podcast-chat-container');
+
+            if (bubble) {
+                bubble.classList.add('ring-4', 'ring-brand-accent/50', 'scale-105');
+            }
+            if (wrapper && container) {
+                container.scrollTo({
+                    top: wrapper.offsetTop - container.offsetTop - 12,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        function speakPodcastTurn() {
+            const track = podcastTracks[currentTrackIndex];
+            if (!isPodcastPlaying || currentPodcastTurnIndex >= track.script.length) {
+                return;
+            }
+
+            const turn = track.script[currentPodcastTurnIndex];
+            highlightActiveBubble(currentPodcastTurnIndex);
+            
+            currentUtterance = new SpeechSynthesisUtterance(turn.text);
+            currentUtterance.lang = 'pt-BR';
+            
+            // Buscar vozes nativas de qualidade do sistema
+            let voices = synth.getVoices();
+            
+            if (turn.host === "Lelé") {
+                // Voz mais rápida, entusiasmada e jovem (pitch ligeiramente mais alto)
+                let femaleVoice = voices.find(v => v.lang.includes('pt-BR') && (v.name.includes('Luciana') || v.name.includes('Helena') || v.name.includes('Maria')));
+                if (femaleVoice) currentUtterance.voice = femaleVoice;
+                currentUtterance.pitch = 1.15; 
+                currentUtterance.rate = 1.05; // Conversa ligeiramente mais rápida
+            } else {
+                // Professor Freudinho: tom mais calmo, conselheiro, encorpado (pitch mais baixo)
+                let maleVoice = voices.find(v => v.lang.includes('pt-BR') && (v.name.includes('Daniel') || v.name.includes('Felipe') || v.name.includes('Google pt-BR')));
+                if (!maleVoice) maleVoice = voices.find(v => v.lang.includes('pt-BR') && v.name.includes('Google'));
+                if (maleVoice) currentUtterance.voice = maleVoice;
+                currentUtterance.pitch = 0.9;
+                currentUtterance.rate = 0.98;
+            }
+
+            currentUtterance.onend = function() {
+                if (isPodcastPlaying) {
+                    currentPodcastTurnIndex++;
+                    if (currentPodcastTurnIndex < track.script.length) {
+                        speakPodcastTurn();
+                    }
+                }
+            };
+
+            currentUtterance.onerror = function() {
+                if (isPodcastPlaying) {
+                    currentPodcastTurnIndex++;
+                    speakPodcastTurn();
+                }
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        function animateWaves(play) {
+            const ids = ['wave-1', 'wave-2', 'wave-3', 'wave-4', 'wave-5', 'wave-6'];
+            ids.forEach((id, idx) => {
+                const el = document.getElementById(id);
+                if (play) {
+                    el.style.height = `${Math.floor(Math.random() * 16) + 6}px`;
+                    el.classList.add('bg-brand-accent');
+                } else {
+                    el.style.height = `${(idx % 3) * 4 + 8}px`;
+                    el.classList.remove('bg-brand-accent');
+                }
+            });
+        }
+
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = () => { synth.getVoices(); };
+        }
+
+        function sendTutorMessage() {
+            const inputEl = document.getElementById('tutor-user-input');
+            const query = inputEl.value.trim();
+            if (!query) return;
+
+            appendChatMessage('user', query);
+            inputEl.value = '';
+
+            setTimeout(() => {
+                const responseText = getLocalExplanation(query);
+                appendChatMessage('system', responseText);
+            }, 700);
+        }
+
+        function appendChatMessage(role, text) {
+            const chatBox = document.getElementById('tutor-chat-box');
+            const div = document.createElement('div');
+            
+            if (role === 'user') {
+                div.className = 'self-end max-w-[90%] bg-brand-accent text-white p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-xs shadow-sm leading-relaxed';
+                div.innerHTML = `<span class="font-bold block mb-0.5 font-mono">Você:</span> ${text}`;
+            } else {
+                div.className = 'self-start max-w-[90%] bg-brand-panel dark:bg-brand-panelDark p-2.5 rounded border border-brand-dark dark:border-brand-lightBorder text-xs shadow-sm leading-relaxed text-stone-800 dark:text-stone-200';
+                div.innerHTML = `<span class="font-bold text-brand-accent block mb-0.5 font-mono">🤖 Assistente:</span> ${text}`;
+            }
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function getLocalExplanation(query) {
+            const lower = query.toLowerCase();
+            
+            if (lower.includes('laudo') || lower.includes('relatório') || lower.includes('diferença')) {
+                return `<strong>Laudo vs. Relatório (Res. 06/2019):</strong><br>
+                        • <strong>Laudo:</strong> É o documento resultante de uma <em>Avaliação Psicológica</em> estruturada. Ele apresenta conclusões, diagnósticos, prognósticos e requer testes científicos.[cite: 4]<br>
+                        • <strong>Relatório:</strong> Tem caráter meramente informativo e descritivo. Ele relata o acompanhamento ou intervenção já em andamento, sem finalidade diagnóstica.[cite: 4]`;
+            }
+            
+            if (lower.includes('declaração') || lower.includes('declaracao')) {
+                return `<strong>Declaração (Res. 06/2019):</strong><br>
+                        Serve exclusivamente para justificar comparecimento do paciente ou acompanhante, dias e horários de tratamento. 
+                        <br>⚠️ <strong>Atenção:</strong> É proibido colocar sintomas, diagnósticos ou CIDs na Declaração.[cite: 4]`;
+            }
+
+            if (lower.includes('satepsi') || lower.includes('teste')) {
+                return `<strong>SATEPSI (Res. 31/2022):</strong><br>
+                        Sistema técnico do Conselho Federal de Psicologia que avalia a fundamentação e a consistência técnico-científica de testes. Os testes precisam possuir fidedignidade e normatização válidas para a população do Brasil.[cite: 3]`;
+            }
+
+            if (lower.includes('prazos') || lower.includes('validade') || lower.includes('guarda')) {
+                return `<strong>Prazos Críticos para a Prova:</strong><br>
+                        • <strong>Guarda de arquivos:</strong> Mínimo de 5 anos.[cite: 4]<br>
+                        • <strong>Estudos de normatização e fidedignidade de testes:</strong> Validade máxima de 15 anos.[cite: 3]<br>
+                        • <strong>Recurso de parecer desfavorável:</strong> Prazo de 30 dias úteis para o psicólogo solicitar revisão.[cite: 3]`;
+            }
+
+            return `Dúvida compreendida! Foco especial nos seguintes conceitos para a prova de Avaliação Psicológica:<br>
+                    • Resolução CFP 06/2019 (documentação)[cite: 4]<br>
+                    • Resolução CFP 31/2022 (SATEPSI).[cite: 3]<br>
+                    Tente me perguntar por termos específicos: 'Laudo', 'Declaração', 'Atestado' ou 'CCAP'![cite: 1, 3, 4]`;
+        }
+    </script>
+</body>
+</html>
