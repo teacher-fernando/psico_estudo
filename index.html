@@ -3,71 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Treino de Avaliação Psicológica</title>
+    <title>Estudo: Avaliação Psicológica</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f3f4f6; font-family: sans-serif; }
-        .card { transition: all 0.2s ease; }
-        .correct { border-color: #059669 !important; background-color: #d1fae5 !important; color: #065f46; }
-        .incorrect { border-color: #dc2626 !important; background-color: #fee2e2 !important; color: #991b1b; }
+        body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
+        .card { transition: all 0.3s ease; }
         button { min-height: 56px; touch-action: manipulation; }
+        .option-selected { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
+        .correct { border-color: #059669 !important; background-color: #d1fae5 !important; }
+        .incorrect { border-color: #dc2626 !important; background-color: #fee2e2 !important; }
     </style>
 </head>
-<body class="min-h-screen p-3 md:p-8 flex flex-col items-center">
+<body class="min-h-screen flex flex-col items-center p-3 font-sans">
 
-    <div class="max-w-md w-full">
-        <h1 class="text-xl font-bold text-gray-800 mb-2 text-center px-2">Simulado: Avaliação Psicológica</h1>
+    <div class="max-w-md w-full" id="app">
+        <h1 class="text-xl font-bold text-gray-800 mb-6 text-center">Simulado: Avaliação Psicológica</h1>
         
-        <!-- Botão de Reiniciar -->
-        <button onclick="location.reload()" class="w-full mb-6 bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg active:bg-blue-700 transition">
-            Reiniciar Simulado
-        </button>
+        <div id="quiz-view">
+            <div id="question-card" class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <div id="q-number" class="text-xs font-bold text-blue-600 mb-3 uppercase tracking-wider"></div>
+                <!-- Aplicado text-justify e leading-relaxed para maior fluidez -->
+                <p id="q-text" class="text-gray-900 font-medium mb-6 text-base leading-relaxed text-justify whitespace-pre-line"></p>
+                <div id="options-container" class="space-y-3"></div>
+            </div>
 
-        <div id="quiz-container"></div>
+            <div class="flex gap-3 mt-6">
+                <button id="prev-btn" onclick="prevQuestion()" class="flex-1 bg-white border border-gray-300 font-semibold py-3 rounded-xl shadow-sm active:bg-gray-100 transition">Voltar</button>
+                <button id="next-btn" onclick="nextQuestion()" class="flex-1 bg-blue-600 text-white font-semibold py-3 rounded-xl shadow-lg active:bg-blue-700 transition">Próxima</button>
+            </div>
+            <button id="finish-btn" onclick="finishQuiz()" class="hidden w-full mt-3 bg-green-600 text-white font-semibold py-4 rounded-xl shadow-lg active:bg-green-700 transition">Finalizar e Corrigir</button>
+        </div>
+
+        <div id="result-view" class="hidden">
+            <h2 class="text-2xl font-bold text-center mb-6">Resultado</h2>
+            <div id="result-content" class="space-y-4"></div>
+            <button onclick="location.reload()" class="w-full mt-8 bg-blue-600 text-white font-semibold py-4 rounded-xl shadow-lg">Reiniciar</button>
+        </div>
     </div>
 
     <script>
         const quizData = [
-            { q: "1) De acordo com o texto sobre os avanços e desafios na avaliação psicológica, quais estão corretas?", a: ["I e II", "II e III", "I e III", "I, II e III"], correct: 3 },
-            { q: "2) Com relação aos desafios e limites de atuação enfrentados pelos profissionais, é correto afirmar que...", a: ["No formato informatizado, há um maior banco de itens.", "É necessário o desenvolvimento de estudos voltados a avaliar a influência das TDICs no rapport.", "Muitos psicólogos possuem amplo acesso à formação.", "Superar obstáculos exige regulamentação de medicação."], correct: 1 },
-            { q: "3) Quanto aos requisitos mínimos e obrigatórios para Avaliação de Testes Psicológicos, é correto dizer que o teste...", a: ["Apresenta fundamentação teórica, com ênfase na definição dos construtos.", "Apresenta apenas a parte prática.", "Não precisa de descrição operacional.", "Possui sistema de correção livre."], correct: 0 },
-            { q: "4) Assinale a alternativa que tem como objetivo explicar o processo de psicodiagnóstica.", a: ["É um processo estritamente técnico sem vínculo.", "Refere-se apenas ao atendimento do psicodiagnóstico.", "É um processo de investigação e intervenção clínica desenvolvido ao longo de um número restrito de sessões.", "Tem como único objetivo identificar aspectos disfuncionais."], correct: 2 },
-            { q: "5) Qual o objetivo da entrevista devolutiva?", a: ["Recuperar os motivos iniciais, refletir sobre o processo, comunicar resultados e oferecer sugestões.", "Apenas o registro do laudo.", "Esclarecer apenas intervenções medicamentosas.", "Fortalecimento das áreas de avaliação."], correct: 0 },
-            { q: "6) Qual alternativa corresponde ao desempenho da CCAP?", a: ["Emitir pareceres sobre instrumentos, propor atualizações normativas e diretrizes de formação.", "Focar em criação de instrumentos éticos apenas.", "Desenvolvimento de práticas mais justas apenas.", "Regras sobre recursos de 20 dias."], correct: 0 },
-            { q: "7) Qual afirmativa atribui ao serviço realizado pelo psicólogo em uma declaração psicológica?", a: ["É o documento baseado em diagnóstico psicológico.", "Registro subjetivo e coloquial.", "Abrange informações de comparecimento e acompanhamento, sendo vedado o registro de sintomas.", "Estrutura obrigatória de cinco itens."], correct: 2 },
-            { q: "8) Com relação aos testes psicológicos reconhecidos, assinale a correta:", a: ["Apresentar apenas definição prática.", "Explicitar objetivos sem detalhes da população-alvo.", "Apresentar evidências empíricas de validade e estimativas de precisão das interpretações.", "Excluir métodos projetivos."], correct: 2 }
+            { 
+                q: "1) De acordo com o texto sobre os avanços e desafios na avaliação psicológica. A observação e a entrevista psicológica são técnicas que permeiam todas as áreas da psicologia sendo possível conduzir um processo completo de avaliação Psicológica utilizando duas fontes fundamentais.\n\nI. O conhecimento qualitativo e o clínico são predominantes no raciocínio do psicólogo.\nII. O teste psicológico é uma ferramenta que complementa a avaliação, pois possibilita avaliar fenômenos que não estão diretamente acessíveis ao avaliador. Assim o psicólogo que possui domínio teórico e técnico na condução das fontes fundamentais pode chegar de forma mais confiável e ética a uma decisão.\nIII. Em relação aos testes psicológicos, é importante destacar os artigos 8º e 9º da resolução, que determinam que o teste psicológico é de uso exclusivo do psicólogo, juntamente com seu manual técnico.\n\nQuais estão corretas?", 
+                a: ["Apenas a I e a II", "Apenas a II e a III", "Apenas a I e a III", "A I, II e a III"], 
+                correct: 3 
+            },
+            { 
+                q: "2) Com relação aos desafios e limites de atuação enfrentados pelos profissionais, baseados em inúmeros recursos no uso do computador e tecnologias Digitais da Informação e comunicaçaõ (TDICs), é correto afirmar que...", 
+                a: [
+                    "No formato informatizado, é possível a elaboração de testes adaptados, com um menor banco de itens, com estímulos diversos e graus de dificuldades.", 
+                    "É necessário o desenvolvimento de estudos voltados a avaliar a influência das TDICs na construção do vínculo terapêutico ou do rapport.", 
+                    "Muitos psicólogos enfrentam barreiras relacionadas ao acesso delimitado à formação técnica em Avaliação Psicológica.", 
+                    "Superar esses obstáculos exige investimento na formação profissional, regulamentação clara sobre o uso de medicação."
+                ], 
+                correct: 1 
+            },
+            { 
+                q: "3) Quanto aos requisitos mínimos e obrigatórios para Avaliação de Testes Psicológicos. É correto dizer que o teste psicológico...", 
+                a: [
+                    "Apresenta fundamentação teórica, com especial ênfase na definição dos construtos e descrever os aspectos constitutivo e operacional.", 
+                    "Apresenta pertinência psicológica e qualidade técnica dos estímulos utilizados no teste psicológico.", 
+                    "Apresenta os itens ou estímulos que compõem o objetivo.", 
+                    "Apresenta sistema de correção e interpretação dos escores, explicitando a lógica que fundamenta a teoria."
+                ], 
+                correct: 0 
+            },
+            { 
+                q: "4) De acordo com o texto, outro avanço se refere à Avaliação psicológica no contexto Clínico, sendo denominada de psicodiagnóstica. Assinale a alternativa que tem com objetivo explicar esse processo.", 
+                a: [
+                    "O processo de psicodiagnóstica pode ter um efeito terapêutico e favorecer a construção de um vínculo entre paciente e psicólogo.", 
+                    "Os avanços nessa área referem-se ao ao atendimento do objetivo do psicodiagnóstico e a importância das indicações terapêuticas.", 
+                    "Psicodiagnóstico é um processo de investigação e intervenção clínica desenvolvido ao longo de um número restrito de sessões, com o objetivo de chegar a um diagnóstico psicológico.", 
+                    "Atualmente entende-se que a Avaliação psicológica não tem como único objetivo identificar aspectos disfuncionais do indivíduo, mas também descrever suas forças como fatores protetivos para sua funcionalidade."
+                ], 
+                correct: 2 
+            },
+            { 
+                q: "5) No processo do diagnóstico a última sessão é chamada de entrevista devolutiva. Qual o objetivo dessa última etapa em Avaliação psicológica?", 
+                a: [
+                    "A entrevista devolutiva tem como objetivo recuperar os motivos e as questões iniciais da avaliação, refletir sobre o processo realizado, comunicar os resultados obtidos e oferecer sugestões de encaminhamento terapêutico.", 
+                    "Essa etapa é fundamental e, juntamente do registro por escrito - o laudo psicológico resultante da Avaliação psicológica.", 
+                    "O psicólogo deve esclarecer ao interessado, de maneira clara , quais intervenções terapêuticas poderão trazer o maior impacto nas dificuldades identificadas.", 
+                    "O reconhecimento e fortalecimento das áreas de avaliação psicológica, e, à medida que eles ocorrem, surgem novas questões, ou até mesmo antigas, mas ainda com limitações para a atuação, que demandam atenção dos profissionais e pesquisadores."
+                ], 
+                correct: 0 
+            },
+            { 
+                q: "6) De acordo com o texto , CCAP (comissão permanente que assessora tecnicamente o CFP em questões relacionadas a avaliação psicóloga. Qual alternativa corresponde ao seu desempenho?", 
+                a: [
+                    "A CCAP desempenha um papel crucial ao emitir pareceres sobre instrumentos de Avaliação psicológica , propor atualizaçoes de documentos normativo e técnicos e promover diretrizes para a formação contínua na área.", 
+                    "A discussão sobre direitos humanos e inclusão,, com foco na criação de instrumentos e práticas mais acessíveis e éticas.", 
+                    "O desenvolvimento de práticas avaliativas mais justa se inclusivas.", 
+                    "20 dias, a partir da comunicação e decisão do plenário do CFP para o requerente apresentar recurso, nos casos de parecer desfavorável."
+                ], 
+                correct: 0 
+            },
+            { 
+                q: "7) A Resolução do exercício profissional Satepsi do CFP, que constitui de modalidades de documentos psicológicos. De acordo com o conceito, finalidade e estrutura do documento, qual afirmativa atribui ao serviço realizado pelo psicólogo em uma declaração psicológica?", 
+                a: [
+                    "A declaração é o documento com o fundamento em um diagnóstico psicológico, uma determinada situação, estado ou funcionamento psicológico, com a finalidade de afirmar as condições psicológicas.", 
+                    "A declaração consiste em um documento escrito com a finalidade de registrar de forma subjetiva, e coloquial, informações sobre prestação de serviço realizado.", 
+                    "A declaração é realizada abrangendo as informações de comparecimento da pessoa atendida e seu acompanhante, acompanhamento psicológico realizado ou em realização, informações sobre o tempo de acompanhamento, dias e horários, sendo vedado o registro de sintomas, situações ou estados psicológicos.", 
+                    "A declaração se estrutura obrigatoriamente na divisão de cinco itens: identificação, descrição da demanda, procedimento, análise e conclusão."
+                ], 
+                correct: 2 
+            },
+            { 
+                q: "8) Com relação aos testes psicológicos reconhecidos para uso profissional de psicólogos, que devem possuir consistência técnico-científica e atender aos requisitos mínimos obrigatórios para Avaliação de testes psicológicos, assinale a alternativa correta.", 
+                a: [
+                    "(A) Apresentar fundamentação teórica, com especial ênfase na definição dos construtos, e descrever os aspectos constitutivos e operacional.", 
+                    "(B) Explicitar os objetivos do teste psicológico e o contexto de aplicação com detalhes da Clínica de trabalho. (população-alvo)", 
+                    "(C) Apresentar evidências empíricas de validade e estimativas de precisão das interpretações para os resultados da evolução (do teste psicológico), caracterizando os procedimentos e os critérios adotados na investigação.", 
+                    "(D) Apresentar evidências empíricas sobre as características técnicas dos itens do teste psicológico, e para os métodos projetivos e expressivos. (exceto para os métodos)"
+                ], 
+                correct: 2 
+            }
         ];
 
-        const container = document.getElementById('quiz-container');
-        
-        quizData.forEach((item, index) => {
-            const card = document.createElement('div');
-            card.className = 'card bg-white p-5 rounded-2xl shadow-sm mb-5 border border-gray-200';
-            card.innerHTML = `
-                <p class="text-gray-900 font-medium mb-4 text-base leading-snug">${item.q}</p>
-                <div class="space-y-3">
-                    ${item.a.map((opt, i) => `
-                        <button onclick="check(this, ${index}, ${i})" class="w-full text-left px-4 py-3 rounded-xl border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition text-sm text-gray-700">
-                            ${opt}
-                        </button>
-                    `).join('')}
-                </div>
-            `;
-            container.appendChild(card);
-        });
+        let currentIdx = 0;
+        const userAnswers = new Array(quizData.length).fill(null);
 
-        function check(btn, qIdx, aIdx) {
-            const parent = btn.parentElement;
-            const buttons = parent.querySelectorAll('button');
-            buttons.forEach(b => b.disabled = true);
+        function renderQuestion() {
+            const q = quizData[currentIdx];
+            document.getElementById('q-number').innerText = `Pergunta ${currentIdx + 1} de ${quizData.length}`;
+            document.getElementById('q-text').innerText = q.q;
             
-            if (aIdx === quizData[qIdx].correct) {
-                btn.classList.add('correct');
-            } else {
-                btn.classList.add('incorrect');
-                buttons[quizData[qIdx].correct].classList.add('correct');
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.a.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 rounded-xl border border-gray-200 transition ${userAnswers[currentIdx] === i ? 'option-selected' : ''}`;
+                btn.innerText = opt;
+                btn.onclick = () => {
+                    userAnswers[currentIdx] = i;
+                    renderQuestion();
+                };
+                container.appendChild(btn);
+            });
+
+            document.getElementById('prev-btn').disabled = currentIdx === 0;
+            document.getElementById('prev-btn').style.opacity = currentIdx === 0 ? '0.5' : '1';
+            
+            document.getElementById('next-btn').classList.toggle('hidden', currentIdx === quizData.length - 1);
+            document.getElementById('finish-btn').classList.toggle('hidden', currentIdx !== quizData.length - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIdx < quizData.length - 1) {
+                currentIdx++;
+                renderQuestion();
             }
         }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                renderQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            
+            const content = document.getElementById('result-content');
+            content.innerHTML = '';
+            
+            quizData.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.correct;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${isCorrect ? 'correct' : 'incorrect'}`;
+                card.innerHTML = `
+                    <p class="font-bold mb-2">Questão ${i + 1}</p>
+                    <p class="text-sm mb-2">${q.q}</p>
+                    <p class="font-semibold text-sm">Sua resposta: ${userAnswers[i] !== null ? q.a[userAnswers[i]] : 'Não respondida'}</p>
+                    ${!isCorrect ? `<p class="text-green-800 text-sm mt-2 font-bold">Correta: ${q.a[q.correct]}</p>` : ''}
+                `;
+                content.appendChild(card);
+            });
+        }
+
+        renderQuestion();
     </script>
 </body>
 </html>
